@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1200" viewBox="0 0 2200 1200" role="img">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#243746" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#405464"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#48687d"/>
+    </marker>
+    <style>
+      .zone { stroke-width: 2; rx: 18; }
+      .plugin-zone { fill: #f3f7fa; stroke: #7892a3; }
+      .platform-zone { fill: #f4f7f1; stroke: #82937b; }
+      .engine-zone { fill: #f5f6f7; stroke: #7e8b94; }
+      .node { fill: #fcfcfb; stroke: #637784; stroke-width: 1.6; rx: 12; filter: url(#shadow); }
+      .node-green { fill: #fbfcf8; stroke: #71836b; stroke-width: 1.6; rx: 12; filter: url(#shadow); }
+      .external { fill: #fafafa; stroke: #71808c; stroke-width: 1.6; rx: 12; }
+      .storage { fill: #f8fafb; stroke: #617787; stroke-width: 1.8; }
+      .zone-label { font: 600 24px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Segoe UI", sans-serif; fill: #263846; text-anchor: middle; }
+      .label { font: 500 18px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Segoe UI", sans-serif; fill: #2c3d48; text-anchor: middle; dominant-baseline: middle; }
+      .small { font: 500 15px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Segoe UI", sans-serif; fill: #40515d; text-anchor: middle; }
+      .flow { fill: none; stroke: #405464; stroke-width: 2; marker-end: url(#arrow); stroke-linejoin: round; }
+      .flow-bi { fill: none; stroke: #405464; stroke-width: 2; marker-start: url(#arrow); marker-end: url(#arrow); stroke-linejoin: round; }
+      .cross { fill: none; stroke: #48687d; stroke-width: 2.2; marker-end: url(#arrowBlue); stroke-linejoin: round; }
+      .dashed { fill: none; stroke: #667d8b; stroke-width: 1.8; stroke-dasharray: 8 7; marker-end: url(#arrow); stroke-linejoin: round; }
+      .icon { fill: none; stroke: #536a79; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="2200" height="1200" fill="#f8f8f6"/>
+
+  <rect class="external" x="115" y="28" width="190" height="70"/>
+  <circle class="icon" cx="155" cy="54" r="10"/>
+  <path class="icon" d="M137 83c2-16 34-16 36 0"/>
+  <text class="label" x="230" y="63">开发者</text>
+
+  <rect class="external" x="825" y="28" width="210" height="70"/>
+  <circle class="icon" cx="866" cy="54" r="10"/>
+  <path class="icon" d="M848 83c2-16 34-16 36 0"/>
+  <text class="label" x="953" y="63">用户 / 管理员</text>
+
+  <rect class="external" x="1080" y="28" width="190" height="70"/>
+  <path class="icon" d="M1114 45l14-7 14 7v14c0 12-8 19-14 23-6-4-14-11-14-23z"/>
+  <path class="icon" d="M1122 58l5 5 10-12"/>
+  <text class="label" x="1200" y="63">企业 SSO / UAC</text>
+
+  <rect class="external" x="1300" y="28" width="160" height="70"/>
+  <rect class="icon" x="1326" y="44" width="11" height="11"/>
+  <rect class="icon" x="1343" y="44" width="11" height="11"/>
+  <rect class="icon" x="1326" y="61" width="11" height="11"/>
+  <rect class="icon" x="1343" y="61" width="11" height="11"/>
+  <text class="label" x="1405" y="63">产品目录</text>
+
+  <rect class="zone plugin-zone" x="70" y="130" width="550" height="860"/>
+  <text class="zone-label" x="345" y="170">VS Code 插件</text>
+
+  <rect class="node" x="105" y="205" width="190" height="75"/>
+  <path class="icon" d="M137 228v28m0-18l18-10m-18 20l18 10"/>
+  <circle class="icon" cx="137" cy="225" r="4"/>
+  <circle class="icon" cx="158" cy="226" r="4"/>
+  <circle class="icon" cx="158" cy="260" r="4"/>
+  <text class="label" x="225" y="244">Git 工作区</text>
+
+  <rect class="node" x="355" y="205" width="225" height="75"/>
+  <path class="icon" d="M384 226l10 10-19 19-10-10zm6-4l6-6m-25 33l-8 8"/>
+  <text class="label" x="478" y="235">上下文收集与</text>
+  <text class="label" x="478" y="258">Agent Tools</text>
+
+  <rect class="node" x="105" y="390" width="190" height="75"/>
+  <path class="icon" d="M130 408l14-7 14 7v14c0 12-8 19-14 23-6-4-14-11-14-23z"/>
+  <text class="label" x="222" y="419">本地安全</text>
+  <text class="label" x="222" y="443">Skill</text>
+
+  <rect class="node" x="355" y="390" width="225" height="75"/>
+  <circle class="icon" cx="387" cy="416" r="7"/>
+  <circle class="icon" cx="374" cy="443" r="7"/>
+  <circle class="icon" cx="400" cy="443" r="7"/>
+  <path class="icon" d="M387 423v11m0 0h-13v2m13-2h13v2"/>
+  <text class="label" x="485" y="428">审查编排</text>
+
+  <rect class="node" x="305" y="535" width="275" height="78"/>
+  <path class="icon" d="M335 554c-9 0-14 7-14 15s6 14 14 14m0-29c10 0 17 7 17 15s-7 14-17 14m0-29v29m-8-22h17m-17 14h17"/>
+  <text class="label" x="458" y="566">VS Code</text>
+  <text class="label" x="458" y="590">Language Model API</text>
+
+  <rect class="node" x="105" y="735" width="220" height="85"/>
+  <path class="icon" d="M132 752h27v46h-27zm7 33l6-8 5 4 5-12"/>
+  <text class="label" x="235" y="766">本地报告与</text>
+  <text class="label" x="235" y="792">扫描历史</text>
+
+  <rect class="node" x="380" y="735" width="200" height="85"/>
+  <rect class="icon" x="405" y="754" width="34" height="24" rx="3"/>
+  <path class="icon" d="M400 789h44m-22-11v11"/>
+  <text class="label" x="508" y="778">平台客户端</text>
+
+  <rect class="external" x="8" y="535" width="220" height="78"/>
+  <path class="icon" d="M35 559l-10 14 10 14m16-28l10 14-10 14m-10 4l7-36"/>
+  <text class="label" x="142" y="566">Copilot /</text>
+  <text class="label" x="142" y="590">VS Code 模型</text>
+
+  <path class="flow" d="M295 242H325V242H355"/>
+  <path class="flow" d="M468 280V390"/>
+  <path class="flow" d="M295 428H355"/>
+  <path class="flow-bi" d="M468 465V535"/>
+  <path class="flow" d="M405 465V700H215V735"/>
+  <path class="flow" d="M530 465V735"/>
+  <path class="flow-bi" d="M305 574H228"/>
+  <path class="flow" d="M210 98V130"/>
+
+  <rect class="zone platform-zone" x="700" y="130" width="720" height="860"/>
+  <text class="zone-label" x="1060" y="170">扫描控制平台</text>
+
+  <rect class="node-green" x="850" y="200" width="360" height="75"/>
+  <circle class="icon" cx="890" cy="238" r="19"/>
+  <path class="icon" d="M871 238h38m-19-19c7 8 7 30 0 38m0-38c-7 8-7 30 0 38"/>
+  <text class="label" x="1055" y="239">React Web 工作台</text>
+
+  <rect class="node-green" x="780" y="330" width="520" height="95"/>
+  <path class="icon" d="M825 354l18-10 18 10v24l-18 10-18-10z"/>
+  <text class="small" x="843" y="371">GO</text>
+  <text class="label" x="1055" y="378">Go HTTP API</text>
+
+  <rect class="node-green" x="735" y="500" width="145" height="110"/>
+  <circle class="icon" cx="778" cy="534" r="10"/>
+  <path class="icon" d="M785 541l17 17m-5-5l8-8m-14 2l8-8"/>
+  <text class="small" x="808" y="575">认证 / SSO</text>
+  <text class="small" x="808" y="596">/ API Key</text>
+
+  <rect class="node-green" x="900" y="500" width="165" height="110"/>
+  <rect class="icon" x="925" y="519" width="28" height="38" rx="3"/>
+  <path class="icon" d="M933 530h12m-12 9h12m-12 9h8"/>
+  <text class="small" x="996" y="575">扫描任务 / Credit</text>
+  <text class="small" x="996" y="596">/ 报告</text>
+
+  <rect class="node-green" x="1085" y="500" width="145" height="110"/>
+  <path class="icon" d="M1114 528l-11 13 11 13m17-26l11 13-11 13m-11 5l8-36"/>
+  <text class="small" x="1158" y="575">Skill 版本管理</text>
+
+  <rect class="node-green" x="1248" y="500" width="145" height="110"/>
+  <circle class="icon" cx="1280" cy="537" r="16"/>
+  <path class="icon" d="M1280 513v8m0 32v8m-24-24h8m32 0h8m-41-17l6 6m22 22l6 6m0-34l-6 6m-22 22l-6 6"/>
+  <text class="small" x="1322" y="575">配置中心</text>
+  <text class="small" x="1322" y="596">/ 模型代理</text>
+
+  <rect class="node-green" x="1210" y="205" width="175" height="75"/>
+  <path class="icon" d="M1236 225h28v33h-28zm7-8h14v8m-14 10h14m-14 9h14"/>
+  <text class="label" x="1320" y="244">Outbox 调度</text>
+
+  <path class="storage" d="M830 702c0-18 98-32 220-32s220 14 220 32v102c0 18-98 32-220 32s-220-14-220-32z"/>
+  <ellipse class="storage" cx="1050" cy="702" rx="220" ry="32"/>
+  <ellipse class="icon" cx="1002" cy="753" rx="18" ry="9"/>
+  <path class="icon" d="M984 753v28c0 5 8 9 18 9s18-4 18-9v-28m-36 14c0 5 8 9 18 9s18-4 18-9"/>
+  <text class="label" x="1100" y="758">MySQL</text>
+
+  <rect class="node-green" x="935" y="880" width="230" height="75"/>
+  <circle class="icon" cx="975" cy="917" r="12"/>
+  <path class="icon" d="M984 926l16 16m-5-5l8-8m-14 2l8-8"/>
+  <text class="label" x="1070" y="918">主密钥文件</text>
+
+  <path class="flow-bi" d="M1030 275V330"/>
+  <path class="flow" d="M930 425V466H808V500"/>
+  <path class="flow" d="M995 425V500"/>
+  <path class="flow" d="M1085 425V466H1158V500"/>
+  <path class="flow" d="M1180 425V466H1322V500"/>
+  <path class="flow" d="M1285 330V280"/>
+  <path class="flow-bi" d="M808 610V670"/>
+  <path class="flow-bi" d="M982 610V670"/>
+  <path class="flow-bi" d="M1158 610V670"/>
+  <path class="flow-bi" d="M1322 610V650H1230V690"/>
+  <path class="flow" d="M1298 280V670H1270"/>
+  <path class="flow" d="M1050 880V836"/>
+  <path class="flow" d="M935 917H808V610"/>
+  <path class="flow" d="M1165 917H1322V610"/>
+  <path class="flow" d="M930 98V200"/>
+  <path class="flow" d="M1175 98V310H930V330"/>
+  <path class="flow" d="M1380 98V310H1180V330"/>
+
+  <rect class="external" x="1438" y="205" width="65" height="75"/>
+  <text class="small" x="1470" y="234">RabbitMQ</text>
+  <text class="small" x="1470" y="257">/ Kafka</text>
+
+  <rect class="zone engine-zone" x="1520" y="130" width="500" height="860"/>
+  <text class="zone-label" x="1770" y="170">扫描引擎</text>
+
+  <rect class="node" x="1545" y="205" width="190" height="75"/>
+  <path class="icon" d="M1570 226h28v32h-28zm7 7h14m-14 8h14m-14 8h14"/>
+  <text class="label" x="1655" y="244">队列消费者</text>
+
+  <rect class="node" x="1795" y="205" width="195" height="75"/>
+  <ellipse class="icon" cx="1826" cy="226" rx="14" ry="7"/>
+  <path class="icon" d="M1812 226v29c0 4 6 7 14 7s14-3 14-7v-29m-28 14c0 4 6 7 14 7s14-3 14-7"/>
+  <text class="label" x="1910" y="233">SQLite</text>
+  <text class="label" x="1910" y="257">幂等任务库</text>
+
+  <rect class="node" x="1600" y="350" width="300" height="85"/>
+  <path class="icon" d="M1630 372v36m0-24l23-12m-23 24l23 12"/>
+  <circle class="icon" cx="1630" cy="369" r="4"/>
+  <circle class="icon" cx="1656" cy="370" r="4"/>
+  <circle class="icon" cx="1656" cy="410" r="4"/>
+  <text class="label" x="1775" y="393">Git 浅克隆与文件过滤</text>
+
+  <rect class="node" x="1545" y="525" width="200" height="90"/>
+  <path class="icon" d="M1570 548l14-7 14 7v14c0 12-8 19-14 23-6-4-14-11-14-23z"/>
+  <text class="label" x="1660" y="571">内置规则扫描</text>
+
+  <rect class="node" x="1775" y="525" width="215" height="90"/>
+  <path class="icon" d="M1805 545c-9 0-14 7-14 15s6 14 14 14m0-29c10 0 17 7 17 15s-7 14-17 14m0-29v29"/>
+  <text class="label" x="1900" y="560">代码索引与</text>
+  <text class="label" x="1900" y="585">AI 分析</text>
+
+  <rect class="node" x="1625" y="690" width="270" height="85"/>
+  <rect class="icon" x="1650" y="708" width="33" height="44" rx="3"/>
+  <path class="icon" d="M1658 719h17m-17 10h17m-17 10h12"/>
+  <text class="label" x="1785" y="733">结果合并 / 脱敏 / 报告</text>
+
+  <rect class="node" x="1625" y="835" width="270" height="80"/>
+  <path class="icon" d="M1650 879h45m-34-15l12-12 12 12m-12-12v34"/>
+  <text class="label" x="1795" y="876">平台回调客户端</text>
+
+  <rect class="external" x="2040" y="350" width="145" height="85"/>
+  <path class="icon" d="M2065 375v36m0-24l22-12m-22 24l22 12"/>
+  <circle class="icon" cx="2065" cy="372" r="4"/>
+  <circle class="icon" cx="2090" cy="374" r="4"/>
+  <circle class="icon" cx="2090" cy="413" r="4"/>
+  <text class="label" x="2140" y="394">Git 仓库</text>
+
+  <rect class="external" x="2028" y="535" width="160" height="90"/>
+  <circle class="icon" cx="2060" cy="579" r="19"/>
+  <path class="icon" d="M2050 563c15-9 29 5 21 18m-22 10c-13-9-6-29 10-29m13 15c7 16-12 28-24 17"/>
+  <text class="label" x="2134" y="569">OpenAI</text>
+  <text class="label" x="2134" y="594">兼容模型</text>
+
+  <path class="cross" d="M1385 242H1438"/>
+  <text class="small" x="1411" y="225">scan.requested</text>
+  <path class="cross" d="M1503 242H1545"/>
+  <path class="flow-bi" d="M1735 242H1795"/>
+  <path class="flow" d="M1640 280V350"/>
+  <path class="flow" d="M1750 435V485H1645V525"/>
+  <path class="flow" d="M1750 435V485H1882V525"/>
+  <path class="flow" d="M1645 615V660H1760V690"/>
+  <path class="flow" d="M1882 615V660H1760V690"/>
+  <path class="flow" d="M1760 775V835"/>
+  <path class="cross" d="M2040 392H1900"/>
+
+  <path class="cross" d="M1775 570H1460V640H1322V610"/>
+  <text class="small" x="1490" y="552">短期模型会话</text>
+  <path class="cross" d="M1393 570H1500V650H2108V625"/>
+
+  <path class="cross" d="M380 778H660V378H780"/>
+  <text class="small" x="655" y="754">Bearer API Key · 任务状态 · 脱敏报告</text>
+
+  <path class="cross" d="M1625 875H1475V1030H1370V425H1300"/>
+  <text class="small" x="1515" y="1015">状态回调 · 报告上传</text>
+
+  <rect class="external" x="850" y="1065" width="400" height="80"/>
+  <path class="icon" d="M885 1084l14-7 14 7v14c0 12-8 19-14 23-6-4-14-11-14-23z"/>
+  <text class="label" x="1065" y="1106">security-baseline-review Skill</text>
+
+  <path class="dashed" d="M850 1105H65V428H105"/>
+  <path class="dashed" d="M1050 1065V1015H1158V610"/>
+  <path class="dashed" d="M1250 1105H2045V650H1882V615"/>
+</svg>

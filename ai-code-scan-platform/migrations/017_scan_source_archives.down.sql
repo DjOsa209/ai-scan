@@ -1,0 +1,1 @@
+DROP TABLE scan_source_archives;

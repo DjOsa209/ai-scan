@@ -1,0 +1,16 @@
+services:
+  engine:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env.example
+      - path: .env
+        required: false
+    volumes:
+      - engine-data:/var/lib/ai-scan-engine
+      - ../plugin-raw/.github/skills/security-baseline-review:/skills/security-baseline-review:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  engine-data:

@@ -1,0 +1,91 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ai_code_scan
+      MYSQL_USER: ai_code_scan
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-local-development-password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-root-password}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-local-root-password}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    image: migrate/migrate:v4.18.3
+    volumes:
+      - ./migrations:/migrations:ro
+    command:
+      - -path=/migrations
+      - -database=mysql://ai_code_scan:${MYSQL_PASSWORD:-local-development-password}@tcp(mysql:3306)/ai_code_scan?multiStatements=true
+      - up
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+
+  key-init:
+    image: alpine:3.22
+    command: ["chown", "-R", "65532:65532", "/keys"]
+    volumes:
+      - model_key_data:/keys
+    restart: "no"
+
+  api:
+    build: .
+    environment:
+      HTTP_ADDRESS: :8080
+      MYSQL_DSN: ai_code_scan:${MYSQL_PASSWORD:-local-development-password}@tcp(mysql:3306)/ai_code_scan?parseTime=true
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-this-admin-token}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+      BOOTSTRAP_ADMIN_CREDITS: ${BOOTSTRAP_ADMIN_CREDITS:-}
+      BUILTIN_SKILL_ROOT: /skills/security-baseline-review
+      SKILL_MAX_BYTES: ${SKILL_MAX_BYTES:-262144}
+      REVIEW_MAX_BYTES: ${REVIEW_MAX_BYTES:-2097152}
+      REVIEW_TIMEOUT_SECONDS: ${REVIEW_TIMEOUT_SECONDS:-180}
+      REVIEW_MAX_CONCURRENT: ${REVIEW_MAX_CONCURRENT:-4}
+      PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-http://api:8080}
+      FEISHU_APP_ID: ${FEISHU_APP_ID:-}
+      FEISHU_APP_SECRET: ${FEISHU_APP_SECRET:-}
+      FEISHU_API_BASE_URL: ${FEISHU_API_BASE_URL:-https://open.feishu.cn}
+      SCAN_QUEUE_PROTOCOL: ${SCAN_QUEUE_PROTOCOL:-rabbitmq}
+      SCAN_QUEUE_BROKER_URL: ${SCAN_QUEUE_BROKER_URL:-}
+      SCAN_QUEUE_NAME: ${SCAN_QUEUE_NAME:-}
+      SCAN_QUEUE_EXCHANGE: ${SCAN_QUEUE_EXCHANGE:-}
+      SCAN_QUEUE_ROUTING_KEY: ${SCAN_QUEUE_ROUTING_KEY:-}
+      SCAN_QUEUE_LITE_NAME: ${SCAN_QUEUE_LITE_NAME:-}
+      SCAN_QUEUE_LITE_ROUTING_KEY: ${SCAN_QUEUE_LITE_ROUTING_KEY:-}
+      SCAN_QUEUE_STANDARD_NAME: ${SCAN_QUEUE_STANDARD_NAME:-}
+      SCAN_QUEUE_STANDARD_ROUTING_KEY: ${SCAN_QUEUE_STANDARD_ROUTING_KEY:-}
+      SCAN_QUEUE_RELEASE_NAME: ${SCAN_QUEUE_RELEASE_NAME:-}
+      SCAN_QUEUE_RELEASE_ROUTING_KEY: ${SCAN_QUEUE_RELEASE_ROUTING_KEY:-}
+      MODEL_KEY_PATH: /var/lib/ai-code-scan-platform/model-key
+    volumes:
+      - ../plugin-raw/.github/skills/security-baseline-review:/skills/security-baseline-review:ro
+      - model_key_data:/var/lib/ai-code-scan-platform
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      key-init:
+        condition: service_completed_successfully
+
+  web:
+    build: ./web
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    depends_on:
+      - api
+
+volumes:
+  mysql_data:
+  model_key_data:

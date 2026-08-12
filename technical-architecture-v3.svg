@@ -1,0 +1,292 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350" role="img" aria-label="Security plugin system technical architecture">
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#183149" stroke-width="1" opacity="0.42"/>
+    </pattern>
+    <filter id="glow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#020b14" flood-opacity="0.55"/>
+    </filter>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#63a9bd"/></marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#c4a36e"/></marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#68a99d"/></marker>
+    <marker id="arrowViolet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8e91b8"/></marker>
+    <marker id="arrowSkill" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#89a879"/></marker>
+    <style>
+      .plane{fill:#0c1c2b;stroke:#31506a;stroke-width:2;rx:18;filter:url(#glow)}
+      .plane2{fill:#0c2028;stroke:#315e66;stroke-width:2;rx:18;filter:url(#glow)}
+      .shared{fill:#101f22;stroke:#52715e;stroke-width:2;stroke-dasharray:9 7;rx:18}
+      .node{fill:#102638;stroke:#55778f;stroke-width:1.7;rx:10}
+      .nodeCyan{fill:#102b3a;stroke:#5e9bad;stroke-width:1.8;rx:10}
+      .nodeAmber{fill:#2b281f;stroke:#9a835d;stroke-width:1.8;rx:10}
+      .nodeTeal{fill:#102c2c;stroke:#589085;stroke-width:1.8;rx:10}
+      .nodeViolet{fill:#22243a;stroke:#777ba5;stroke-width:1.8;rx:10}
+      .nodeGreen{fill:#1b2b22;stroke:#708d66;stroke-width:1.8;rx:10}
+      .external{fill:#111b27;stroke:#526273;stroke-width:1.6;rx:10}
+      .planeTitle{font:600 23px -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Segoe UI",sans-serif;fill:#b8ccda;letter-spacing:.4px}
+      .section{font:600 17px -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Segoe UI",sans-serif;fill:#83a6bb;letter-spacing:.4px}
+      .label{font:500 17px -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Segoe UI",sans-serif;fill:#d4e0e8;text-anchor:middle;dominant-baseline:middle}
+      .small{font:500 14px -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Segoe UI",sans-serif;fill:#9cb2c1;text-anchor:middle}
+      .tiny{font:500 13px -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Segoe UI",sans-serif;fill:#8ea6b5;text-anchor:middle}
+      .cyan{fill:none;stroke:#63a9bd;stroke-width:2.2;marker-end:url(#arrowCyan);stroke-linejoin:round}
+      .cyanBi{fill:none;stroke:#63a9bd;stroke-width:2.1;marker-start:url(#arrowCyan);marker-end:url(#arrowCyan);stroke-linejoin:round}
+      .amber{fill:none;stroke:#c4a36e;stroke-width:2.3;marker-end:url(#arrowAmber);stroke-linejoin:round}
+      .teal{fill:none;stroke:#68a99d;stroke-width:2.3;marker-end:url(#arrowTeal);stroke-linejoin:round}
+      .tealBi{fill:none;stroke:#68a99d;stroke-width:2.1;marker-start:url(#arrowTeal);marker-end:url(#arrowTeal);stroke-linejoin:round}
+      .violet{fill:none;stroke:#8e91b8;stroke-width:2.2;marker-end:url(#arrowViolet);stroke-linejoin:round}
+      .skillLine{fill:none;stroke:#89a879;stroke-width:2;stroke-dasharray:8 7;marker-end:url(#arrowSkill);stroke-linejoin:round}
+      .data{fill:none;stroke:#688194;stroke-width:1.9;marker-end:url(#arrowCyan);stroke-linejoin:round}
+      .divider{stroke:#27445a;stroke-width:1.2;stroke-dasharray:5 7}
+    </style>
+  </defs>
+
+  <rect width="2400" height="1350" fill="#07131f"/>
+  <rect width="2400" height="1350" fill="url(#grid)"/>
+
+  <rect class="plane" x="30" y="30" width="1000" height="790"/>
+  <rect class="plane" x="1070" y="30" width="1300" height="640"/>
+  <rect class="plane2" x="1220" y="735" width="1150" height="585"/>
+  <rect class="shared" x="30" y="865" width="1130" height="455"/>
+
+  <text class="planeTitle" x="65" y="72">plugin-raw / Developer Edge</text>
+  <text class="planeTitle" x="1105" y="72">ai-code-scan-platform / Control Plane</text>
+  <text class="planeTitle" x="1255" y="777">ai-scan-engine / Execution Plane · 三级扫描引擎</text>
+  <text class="planeTitle" x="65" y="907">security-baseline-review / Shared Baseline</text>
+
+  <line class="divider" x1="65" y1="88" x2="995" y2="88"/>
+  <line class="divider" x1="1105" y1="88" x2="2335" y2="88"/>
+  <line class="divider" x1="1255" y1="792" x2="2335" y2="792"/>
+  <line class="divider" x1="65" y1="923" x2="1125" y2="923"/>
+
+  <!-- Developer Edge connectors -->
+  <path class="cyan" d="M220 170V218"/>
+  <path class="cyan" d="M445 170V195H220V218"/>
+  <path class="cyan" d="M360 260H430"/>
+  <path class="cyan" d="M575 303V338"/>
+  <path class="cyan" d="M720 260H745"/>
+  <path class="cyan" d="M720 379H735V304H745"/>
+  <path class="cyanBi" d="M895 258V375"/>
+  <path class="cyanBi" d="M895 435V478"/>
+  <path class="cyan" d="M665 304V535"/>
+  <path class="cyan" d="M665 595V650"/>
+  <path class="cyan" d="M665 595H835"/>
+  <path class="cyan" d="M920 595V650"/>
+  <path class="skillLine" d="M230 578H540V379H430"/>
+
+  <!-- Plugin to platform, kept outside the async execution route -->
+  <path class="cyan" d="M920 535V500H1048V198H1500"/>
+  <text class="small" x="1265" y="184">Bearer API Key · 任务生命周期 · Schema 2.0 · 过滤源码快照 · Token</text>
+
+  <!-- Control Plane connectors -->
+  <path class="data" d="M1245 140H1315"/>
+  <path class="data" d="M1435 140H1500"/>
+  <path class="data" d="M1720 180V230H1190V278"/>
+  <path class="data" d="M1720 180V230H1390V278"/>
+  <path class="data" d="M1720 180V278"/>
+  <path class="data" d="M1720 180V230H1920V278"/>
+  <path class="data" d="M1720 180V230H2115V278"/>
+  <path class="data" d="M2220 135H1940"/>
+  <path class="data" d="M2220 225H1980V160H1940"/>
+  <path class="data" d="M1190 348V430H1515"/>
+  <path class="data" d="M1390 348V430H1515"/>
+  <path class="data" d="M1720 348V430H1515"/>
+  <path class="data" d="M1920 348V470H1825"/>
+  <path class="data" d="M2115 348V460H2260V510H2170"/>
+  <path class="violet" d="M2170 540H2225V350"/>
+  <path class="data" d="M1515 500H1405"/>
+  <path class="amber" d="M1300 500H1235V705H1322V895"/>
+  <text class="small" x="1250" y="690">scan.requested · normal / urgent</text>
+  <path class="data" d="M1610 180V430"/>
+
+  <!-- Skill distribution and mounts -->
+  <path class="skillLine" d="M1720 348V620H1060V730H230V608"/>
+  <text class="small" x="760" y="714">缺失时解析并下载 Skill Bundle</text>
+  <path class="skillLine" d="M460 1022V608H230"/>
+  <path class="skillLine" d="M700 1022V760H1995V1057H2040"/>
+  <path class="skillLine" d="M935 1022V640H1720V348"/>
+  <path class="skillLine" d="M297 1022V1045H585V1065"/>
+  <path class="skillLine" d="M657 1022V1065"/>
+  <path class="skillLine" d="M990 1022V1045H585V1065"/>
+
+  <!-- Execution Plane connectors -->
+  <path class="tealBi" d="M1322 955V1015"/>
+  <path class="teal" d="M1395 925H1430"/>
+  <path class="teal" d="M1560 925H1605"/>
+  <path class="teal" d="M1755 925H1795"/>
+  <path class="teal" d="M1955 925H1980V827H2040"/>
+  <path class="teal" d="M1955 925H2040"/>
+  <path class="teal" d="M1955 925H1980V1057H2040"/>
+  <path class="teal" d="M2310 827H2340V1120H2310V1140"/>
+  <path class="teal" d="M2310 942H2340"/>
+  <path class="teal" d="M2310 1057H2340"/>
+  <path class="teal" d="M2175 1210V1235"/>
+  <path class="teal" d="M2040 1270H1990V1300H1190V600H1515V180"/>
+  <text class="small" x="1590" y="1285">状态 · 进度 · 报告 · 脱敏证据快照 · Token</text>
+  <path class="data" d="M1245 1085H1580V925H1605"/>
+  <text class="small" x="1420" y="1070">仓库凭据 · Git 浅克隆</text>
+  <path class="violet" d="M2040 942H2010V650H2082V580"/>
+  <path class="violet" d="M2040 1057H1995V680H2010"/>
+  <text class="small" x="2100" y="636">LLM / AI 短期模型会话</text>
+
+  <!-- Developer Edge nodes -->
+  <text class="section" x="70" y="120">IDE 增量审查</text>
+  <rect class="node" x="70" y="130" width="300" height="40"/>
+  <text class="label" x="220" y="151">Activity Bar · Results Panel</text>
+  <rect class="node" x="395" y="130" width="330" height="40"/>
+  <text class="label" x="560" y="151">@pi-security Chat · Commands</text>
+
+  <rect class="nodeCyan" x="80" y="218" width="280" height="84"/>
+  <text class="label" x="220" y="246">Git 未提交变更</text>
+  <text class="small" x="220" y="280">staged · unstaged · untracked</text>
+
+  <rect class="nodeCyan" x="430" y="218" width="290" height="86"/>
+  <text class="label" x="575" y="246">Git Context Collector</text>
+  <text class="small" x="575" y="280">diff · changed files · tests · config</text>
+
+  <rect class="nodeCyan" x="430" y="338" width="290" height="82"/>
+  <text class="label" x="575" y="366">TypeScript Code Graph</text>
+  <text class="small" x="575" y="400">TypeScript Compiler API</text>
+
+  <rect class="nodeViolet" x="745" y="218" width="300" height="86"/>
+  <text class="label" x="895" y="246">Bounded Review Agent</text>
+  <text class="small" x="895" y="280">max 24 rounds · JSON validation</text>
+
+  <rect class="nodeViolet" x="745" y="375" width="300" height="60"/>
+  <text class="label" x="895" y="406">VS Code Language Model API</text>
+
+  <rect class="external" x="745" y="478" width="300" height="60"/>
+  <text class="label" x="895" y="509">VS Code 当前选择模型</text>
+
+  <rect class="node" x="80" y="518" width="300" height="90"/>
+  <text class="label" x="230" y="546">本地 Skill Bundle</text>
+  <text class="small" x="230" y="578">SKILL.md · baseline · report schema</text>
+
+  <rect class="node" x="430" y="445" width="290" height="60"/>
+  <text class="label" x="575" y="476">Read-only Agent Tools</text>
+
+  <rect class="nodeCyan" x="555" y="535" width="220" height="60"/>
+  <text class="label" x="665" y="566">Schema 2.0 Report</text>
+
+  <rect class="node" x="555" y="650" width="220" height="68"/>
+  <text class="label" x="665" y="675">GlobalStorage 历史</text>
+  <text class="small" x="665" y="700">Markdown 导出</text>
+
+  <rect class="nodeCyan" x="835" y="535" width="170" height="60"/>
+  <text class="label" x="920" y="566">Plugin Scan Client</text>
+
+  <rect class="node" x="835" y="650" width="170" height="68"/>
+  <text class="label" x="920" y="675">SecretStorage</text>
+  <text class="small" x="920" y="700">Platform API Key</text>
+
+  <!-- Control Plane nodes -->
+  <rect class="node" x="1110" y="110" width="135" height="60"/>
+  <text class="label" x="1177" y="141">React Web</text>
+  <rect class="node" x="1315" y="110" width="120" height="60"/>
+  <text class="label" x="1375" y="141">Nginx</text>
+  <rect class="nodeCyan" x="1500" y="100" width="440" height="80"/>
+  <text class="label" x="1720" y="129">Go HTTP API</text>
+  <text class="small" x="1720" y="158">Cookie Session · Bearer API Key · Admin Token</text>
+
+  <rect class="external" x="2220" y="105" width="125" height="60"/>
+  <text class="label" x="2282" y="136">UAC / OAuth2</text>
+  <rect class="external" x="2220" y="195" width="125" height="60"/>
+  <text class="label" x="2282" y="226">产品目录</text>
+
+  <rect class="node" x="1110" y="278" width="160" height="70"/>
+  <text class="label" x="1190" y="306">Auth</text>
+  <text class="small" x="1190" y="330">Session · API Key</text>
+
+  <rect class="nodeAmber" x="1305" y="278" width="170" height="70"/>
+  <text class="label" x="1390" y="306">Credit Ledger</text>
+  <text class="small" x="1390" y="330">冻结 · 结算 · 退款</text>
+
+  <rect class="nodeCyan" x="1515" y="278" width="410" height="70"/>
+  <text class="label" x="1720" y="305">Scan Task · Report · Log</text>
+  <text class="small" x="1720" y="330">Plugin Scan / Platform Scan</text>
+
+  <rect class="nodeGreen" x="1955" y="278" width="320" height="70"/>
+  <text class="label" x="2115" y="305">Skill Registry · Version · Resolve</text>
+  <text class="small" x="2115" y="330">built-in / remote</text>
+
+  <rect class="node" x="1745" y="400" width="160" height="70"/>
+  <text class="label" x="1825" y="428">Platform State</text>
+  <text class="small" x="1825" y="453">配置 · 加密密钥</text>
+
+  <rect class="nodeViolet" x="1995" y="500" width="175" height="80"/>
+  <text class="label" x="2082" y="528">Model Proxy</text>
+  <text class="small" x="2082" y="554">Task / Model Session</text>
+  <rect class="external" x="2225" y="320" width="120" height="60"/>
+  <text class="label" x="2285" y="351">OpenAI 兼容模型</text>
+
+  <path d="M1405 430c0-18 49-32 110-32s110 14 110 32v70c0 18-49 32-110 32s-110-14-110-32z" fill="#2b281f" stroke="#9a835d" stroke-width="1.8"/>
+  <ellipse cx="1515" cy="430" rx="110" ry="32" fill="#2b281f" stroke="#9a835d" stroke-width="1.8"/>
+  <text class="label" x="1515" y="469">MySQL 8.4</text>
+
+  <rect class="nodeAmber" x="1095" y="460" width="205" height="80"/>
+  <text class="label" x="1197" y="488">Transactional Outbox</text>
+  <text class="small" x="1197" y="515">Dispatcher</text>
+
+  <rect class="node" x="1745" y="500" width="160" height="70"/>
+  <text class="label" x="1825" y="528">AES-256-GCM</text>
+  <text class="small" x="1825" y="554">Master Key File</text>
+
+  <rect class="nodeAmber" x="1095" y="685" width="225" height="70"/>
+  <text class="label" x="1207" y="711">RabbitMQ / Kafka</text>
+  <text class="small" x="1207" y="738">normal · urgent</text>
+
+  <!-- Shared Baseline nodes -->
+  <rect class="nodeGreen" x="135" y="965" width="325" height="57"/>
+  <text class="label" x="297" y="994">SKILL.md</text>
+  <rect class="nodeGreen" x="495" y="965" width="325" height="57"/>
+  <text class="label" x="657" y="994">references/sec-baseline.md</text>
+  <rect class="nodeGreen" x="855" y="965" width="270" height="57"/>
+  <text class="label" x="990" y="994">report-artifact.schema.json</text>
+  <rect class="nodeGreen" x="235" y="1065" width="700" height="95"/>
+  <text class="label" x="585" y="1097">Security Baseline Bundle</text>
+  <text class="small" x="585" y="1126">平台只读挂载 · 引擎只读挂载 · 插件工作区分发</text>
+  <rect class="external" x="235" y="1200" width="700" height="65"/>
+  <text class="label" x="585" y="1233">plugin-raw/.github/skills/security-baseline-review</text>
+
+  <!-- Execution Plane nodes -->
+  <rect class="nodeTeal" x="1250" y="895" width="145" height="60"/>
+  <text class="label" x="1322" y="926">Queue Consumer</text>
+  <rect class="node" x="1250" y="1015" width="145" height="70"/>
+  <text class="label" x="1322" y="1040">SQLite Job Store</text>
+  <text class="small" x="1322" y="1065">dedupe · progress</text>
+
+  <rect class="nodeTeal" x="1430" y="895" width="130" height="60"/>
+  <text class="label" x="1495" y="926">Worker</text>
+  <rect class="nodeTeal" x="1605" y="885" width="150" height="80"/>
+  <text class="label" x="1680" y="913">Git Shallow Clone</text>
+  <text class="small" x="1680" y="941">Source Filter</text>
+
+  <rect class="nodeTeal" x="1795" y="885" width="160" height="80"/>
+  <text class="label" x="1875" y="913">Scan Level Router</text>
+  <text class="small" x="1875" y="941">lite · standard · pro</text>
+
+  <rect class="nodeTeal" x="2040" y="785" width="270" height="84"/>
+  <text class="label" x="2175" y="809">LITE · 轻量级扫描</text>
+  <text class="small" x="2175" y="836">SonarQube 集群</text>
+  <text class="tiny" x="2175" y="858">Demo · 硬编码等问题 · 秒–分钟级</text>
+
+  <rect class="nodeAmber" x="2040" y="900" width="270" height="84"/>
+  <text class="label" x="2175" y="924">STANDARD · 标准扫描</text>
+  <text class="small" x="2175" y="951">Fortify SAST + LLM</text>
+  <text class="tiny" x="2175" y="973">分钟–小时级</text>
+
+  <rect class="nodeViolet" x="2040" y="1015" width="270" height="84"/>
+  <text class="label" x="2175" y="1039">PRO · 高级扫描</text>
+  <text class="small" x="2175" y="1066">AI 全量扫描 · AI 攻防</text>
+  <text class="tiny" x="2175" y="1088">渗透测试验证 · 小时–天级</text>
+
+  <rect class="nodeTeal" x="2040" y="1140" width="270" height="70"/>
+  <text class="label" x="2175" y="1165">Normalize · Dedupe</text>
+  <text class="small" x="2175" y="1190">Schema 2.0 Report</text>
+
+  <rect class="nodeTeal" x="2040" y="1235" width="270" height="70"/>
+  <text class="label" x="2175" y="1260">Evidence Redaction</text>
+  <text class="small" x="2175" y="1285">Platform Callback</text>
+
+  <rect class="external" x="1070" y="1050" width="175" height="70"/>
+  <text class="label" x="1157" y="1075">Git Repository</text>
+  <text class="small" x="1157" y="1102">credential on demand</text>
+</svg>

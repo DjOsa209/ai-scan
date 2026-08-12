@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/pi-security-review/report-artifact-2.0.json",
+  "title": "PI Security Review Report Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "generatedAt",
+    "baseline",
+    "dataClassification",
+    "workspaceLabel",
+    "skillPath",
+    "reportJson"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "2.0" },
+    "reportId": { "type": "string", "format": "uuid" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "baseline": { "const": "sec-baseline.md" },
+    "dataClassification": { "const": "CONFIDENTIAL" },
+    "workspaceLabel": { "type": "string", "minLength": 1 },
+    "skillPath": { "type": "string", "minLength": 1 },
+    "reportJson": {
+      "type": "string",
+      "minLength": 1,
+      "contentMediaType": "application/json",
+      "contentSchema": { "$ref": "#/$defs/report" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "location": {
+      "type": "object", "additionalProperties": false, "required": ["path", "line"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$" },
+        "line": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "dataFlowNode": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "label", "path", "line", "symbol", "expression"],
+      "properties": {
+        "kind": { "enum": ["source", "propagator", "sink"] }, "label": { "$ref": "#/$defs/text" },
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$" },
+        "line": { "type": "integer", "minimum": 1 }, "symbol": { "$ref": "#/$defs/text" }, "expression": { "$ref": "#/$defs/text" }
+      }
+    },
+    "dataFlow": {
+      "type": "object", "additionalProperties": false, "required": ["analysisMethod", "nodes", "limitations"],
+      "properties": {
+        "analysisMethod": { "enum": ["ai-context", "ast-assisted"] },
+        "nodes": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/dataFlowNode" } },
+        "limitations": { "type": "array", "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "severity", "rule", "locations", "confidence", "evidence", "impact", "remediation", "verification"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "title": { "$ref": "#/$defs/text" },
+        "severity": { "enum": ["critical", "high", "medium", "low"] }, "rule": { "$ref": "#/$defs/text" },
+        "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
+        "confidence": { "enum": ["high", "medium", "low"] }, "evidence": { "$ref": "#/$defs/text" },
+        "impact": { "$ref": "#/$defs/text" }, "remediation": { "$ref": "#/$defs/text" }, "verification": { "$ref": "#/$defs/text" },
+        "dataFlow": { "$ref": "#/$defs/dataFlow" }
+      }
+    },
+    "manualReviewItem": {
+      "type": "object", "additionalProperties": false, "required": ["id", "title", "rule", "reason", "requiredEvidence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "title": { "$ref": "#/$defs/text" }, "rule": { "$ref": "#/$defs/text" },
+        "reason": { "$ref": "#/$defs/text" }, "requiredEvidence": { "$ref": "#/$defs/text" }
+      }
+    },
+    "report": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "metadata", "result", "summary", "findings", "manualReview", "coverage"],
+      "properties": {
+        "schemaVersion": { "const": "2.0" },
+        "metadata": {
+          "type": "object", "additionalProperties": false, "required": ["baseline", "scope", "generatedAt"],
+          "properties": {
+            "baseline": { "const": "sec-baseline.md" }, "scope": { "$ref": "#/$defs/text" },
+            "generatedAt": { "anyOf": [{ "type": "string", "format": "date-time" }, { "const": "unavailable" }] }
+          }
+        },
+        "result": { "enum": ["pass", "findings", "incomplete"] },
+        "summary": {
+          "type": "object", "additionalProperties": false, "required": ["critical", "high", "medium", "low", "manualReview"],
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 }, "high": { "type": "integer", "minimum": 0 },
+            "medium": { "type": "integer", "minimum": 0 }, "low": { "type": "integer", "minimum": 0 },
+            "manualReview": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+        "manualReview": { "type": "array", "items": { "$ref": "#/$defs/manualReviewItem" } },
+        "coverage": {
+          "type": "object", "additionalProperties": false, "required": ["checked", "notChecked", "tools"],
+          "properties": {
+            "checked": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+            "notChecked": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+            "tools": { "type": "array", "items": { "$ref": "#/$defs/text" } }
+          }
+        }
+      }
+    }
+  }
+}

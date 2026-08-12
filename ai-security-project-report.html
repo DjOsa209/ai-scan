@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI 代码安全扫描项目全景汇报">
+  <title>AI 代码安全扫描项目全景汇报</title>
+  <style>
+    :root {
+      --ink: #172331;
+      --muted: #596777;
+      --quiet: #7b8794;
+      --paper: #ffffff;
+      --canvas: #f2f4f6;
+      --soft: #f7f8f9;
+      --line: #dce2e7;
+      --line-strong: #bec9d2;
+      --brand: #315b7d;
+      --brand-deep: #24465f;
+      --green: #3f7657;
+      --amber: #9a6d22;
+      --red: #a64b4b;
+      --blue-soft: #eaf0f4;
+      --green-soft: #eaf2ed;
+      --amber-soft: #f5efe3;
+      --red-soft: #f7eaea;
+      --shadow: 0 12px 32px rgba(30, 50, 66, 0.08);
+      --radius: 6px;
+      --serif: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+      --sans: "Avenir Next", "Noto Sans CJK SC", "PingFang SC", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    button { letter-spacing: 0; }
+
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: 100;
+      width: 0;
+      height: 3px;
+      background: var(--brand);
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 90;
+      inset: 0 0 auto 0;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      color: #fff;
+      background: var(--brand-deep);
+      border-bottom: 1px solid rgba(255,255,255,.16);
+    }
+    .brand-lockup { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 28px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--brand-deep);
+      background: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px 4px 9px 9px;
+    }
+    .brand-name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .brand-sub { color: rgba(255,255,255,.68); font-size: 12px; white-space: nowrap; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-button, .audience-button {
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.28);
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .icon-button { width: 36px; padding: 0; font-size: 17px; }
+    .audience-button { padding: 0 12px; font-size: 12px; }
+    .icon-button:hover, .audience-button:hover { background: rgba(255,255,255,.1); }
+
+    .layout { display: grid; grid-template-columns: 232px minmax(0, 1fr); padding-top: 58px; }
+    .sidebar {
+      position: fixed;
+      inset: 58px auto 0 0;
+      width: 232px;
+      padding: 30px 18px;
+      background: var(--paper);
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+    }
+    .nav-label {
+      margin: 0 10px 12px;
+      color: var(--quiet);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      margin: 2px 0;
+      padding: 9px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      border-left: 3px solid transparent;
+    }
+    .nav-link span:first-child { width: 20px; color: var(--quiet); font-size: 11px; }
+    .nav-link:hover, .nav-link.active {
+      color: var(--brand-deep);
+      background: var(--blue-soft);
+      border-left-color: var(--brand);
+    }
+    .sidebar-note {
+      margin: 28px 10px 0;
+      padding-top: 18px;
+      color: var(--quiet);
+      font-size: 11px;
+      border-top: 1px solid var(--line);
+    }
+
+    main { grid-column: 2; min-width: 0; }
+    .band { padding: 78px clamp(28px, 5vw, 76px); background: var(--paper); border-bottom: 1px solid var(--line); }
+    .band.alt { background: var(--soft); }
+    .inner { width: min(1120px, 100%); margin: 0 auto; }
+    .hero {
+      min-height: calc(100vh - 58px);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: var(--brand-deep);
+    }
+    .hero::after {
+      content: "SECURITY / DELIVERY / GOVERNANCE";
+      position: absolute;
+      right: -58px;
+      bottom: 70px;
+      color: rgba(255,255,255,.055);
+      font-size: clamp(38px, 6vw, 88px);
+      font-weight: 800;
+      line-height: .9;
+      writing-mode: vertical-rl;
+      letter-spacing: 2px;
+    }
+    .hero .inner { position: relative; z-index: 1; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 32px; height: 2px; background: currentColor; }
+    .hero .eyebrow { color: #b9cedd; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 880px;
+      margin-bottom: 26px;
+      font-family: var(--serif);
+      font-size: clamp(42px, 6.2vw, 82px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .hero-lead { max-width: 780px; color: #d9e4eb; font-size: clamp(17px, 2vw, 22px); line-height: 1.65; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 12px 34px; margin-top: 44px; color: #b9cbd7; font-size: 12px; }
+    .hero-meta strong { display: block; margin-bottom: 2px; color: #fff; font-size: 14px; }
+    .hero-rule { width: min(720px, 72%); height: 1px; margin: 36px 0 24px; background: rgba(255,255,255,.25); }
+    .hero-summary { max-width: 760px; margin: 0; color: #eff5f8; font-size: 14px; }
+
+    h2 { margin-bottom: 18px; font-family: var(--serif); font-size: clamp(30px, 4vw, 46px); line-height: 1.2; letter-spacing: 0; }
+    h3 { margin-bottom: 10px; font-size: 17px; line-height: 1.4; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr); gap: 64px; align-items: end; margin-bottom: 42px; }
+    .section-head p { margin-bottom: 0; color: var(--muted); }
+    .section-index { color: var(--line-strong); font-family: var(--serif); font-size: 44px; line-height: 1; }
+    .lead { max-width: 780px; color: var(--muted); font-size: 18px; }
+
+    .statement {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 54px;
+      align-items: stretch;
+    }
+    .statement-main { padding: 38px 0; border-top: 2px solid var(--brand); border-bottom: 1px solid var(--line); }
+    .statement-main blockquote { margin: 0; font-family: var(--serif); font-size: clamp(25px, 3.5vw, 39px); line-height: 1.45; }
+    .statement-main p { margin: 24px 0 0; color: var(--muted); }
+    .decision-list { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .decision-item { padding: 22px; background: var(--paper); }
+    .decision-item strong { display: block; margin-bottom: 5px; color: var(--brand-deep); }
+    .decision-item span { color: var(--muted); font-size: 13px; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 38px; }
+    .metric { min-height: 142px; padding: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .metric-value { margin-bottom: 9px; color: var(--brand-deep); font-family: var(--serif); font-size: 38px; font-weight: 700; line-height: 1; }
+    .metric-label { font-weight: 700; }
+    .metric-note { margin-top: 6px; color: var(--quiet); font-size: 11px; }
+
+    .audience-tabs { display: flex; gap: 0; margin: 26px 0 34px; border-bottom: 1px solid var(--line); }
+    .audience-tab { padding: 10px 18px; color: var(--muted); background: none; border: 0; border-bottom: 3px solid transparent; cursor: pointer; }
+    .audience-tab.active { color: var(--brand-deep); font-weight: 700; border-bottom-color: var(--brand); }
+    .audience-panel { display: none; }
+    .audience-panel.active { display: block; animation: rise .28s ease-out; }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .value-card { min-height: 220px; padding: 26px; background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: var(--radius); }
+    .value-card .number { color: var(--line-strong); font-family: var(--serif); font-size: 28px; }
+    .value-card p { color: var(--muted); font-size: 13px; }
+    .value-card .outcome { display: block; margin-top: 18px; padding-top: 14px; color: var(--brand-deep); font-size: 12px; font-weight: 700; border-top: 1px solid var(--line); }
+
+    .architecture {
+      padding: 28px;
+      background: #edf1f4;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+    }
+    .arch-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .arch-node { min-height: 142px; padding: 22px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; }
+    .arch-node .tag { color: var(--brand); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .arch-node p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .arch-flow { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; gap: 8px; margin: 18px 0; color: var(--quiet); font-size: 11px; text-align: center; }
+    .arch-flow i { display: block; height: 1px; background: var(--line-strong); }
+    .shared-foundation { padding: 18px 22px; color: #fff; background: var(--brand-deep); border-radius: 4px; }
+    .shared-foundation strong { margin-right: 18px; }
+    .shared-foundation span { color: #d5e2e9; font-size: 12px; }
+
+    .journey { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; margin-top: 40px; }
+    .journey::before { content: ""; position: absolute; top: 18px; left: 8%; right: 8%; height: 1px; background: var(--line-strong); }
+    .journey-step { position: relative; padding: 0 14px; text-align: center; }
+    .journey-dot { width: 36px; height: 36px; display: grid; place-items: center; margin: 0 auto 18px; color: #fff; background: var(--brand); border: 6px solid var(--soft); border-radius: 50%; font-size: 10px; font-weight: 800; }
+    .journey-step strong { display: block; font-size: 13px; }
+    .journey-step span { color: var(--quiet); font-size: 11px; line-height: 1.5; }
+
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 48px; }
+    .mode-card { min-height: 246px; padding: 26px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .mode-card.recommended { border-top: 3px solid var(--brand); box-shadow: var(--shadow); }
+    .mode-card.release { border-top: 3px solid var(--brand-deep); }
+    .mode-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; color: var(--brand); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .mode-label em { padding: 3px 7px; color: var(--green); background: var(--green-soft); font-style: normal; letter-spacing: 0; border-radius: 3px; }
+    .mode-card p { color: var(--muted); font-size: 13px; }
+    .mode-engine { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .mode-engine span { display: block; color: var(--quiet); font-size: 10px; }
+    .mode-engine strong { color: var(--brand-deep); font-size: 13px; }
+
+    .capability-table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); }
+    .capability-table th, .capability-table td { padding: 15px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    .capability-table th { color: var(--muted); background: #f0f3f5; font-size: 11px; font-weight: 800; }
+    .capability-table td { font-size: 13px; }
+    .capability-table td:first-child { width: 22%; font-weight: 700; }
+    .status { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 11px; font-weight: 700; }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .status.done { color: var(--green); }
+    .status.verify { color: var(--amber); }
+    .status.plan { color: var(--brand); }
+
+    .governance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .governance-item { display: grid; grid-template-columns: 42px 1fr; gap: 16px; min-height: 146px; padding: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .governance-icon { width: 42px; height: 42px; display: grid; place-items: center; color: var(--brand-deep); background: var(--blue-soft); border-radius: 4px; font-size: 12px; font-weight: 800; }
+    .governance-item p { margin-bottom: 0; color: var(--muted); font-size: 13px; }
+
+    .evidence-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
+    .evidence-panel { padding: 28px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .evidence-list { margin: 22px 0 0; padding: 0; list-style: none; }
+    .evidence-list li { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
+    .evidence-list b { color: var(--green); }
+    .evidence-list small { color: var(--quiet); }
+    .stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .stack span { padding: 6px 9px; color: var(--muted); background: var(--soft); border: 1px solid var(--line); border-radius: 3px; font-size: 11px; }
+
+    .risk-row { display: grid; grid-template-columns: 110px 1fr 160px; gap: 20px; align-items: center; padding: 18px 0; border-top: 1px solid var(--line); }
+    .risk-row:first-of-type { border-top: 2px solid var(--brand); }
+    .risk-level { font-size: 11px; font-weight: 800; }
+    .risk-level.high { color: var(--red); }
+    .risk-level.medium { color: var(--amber); }
+    .risk-level.low { color: var(--green); }
+    .risk-row p { margin: 0; color: var(--muted); font-size: 13px; }
+    .risk-owner { color: var(--quiet); font-size: 11px; text-align: right; }
+
+    .future-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; }
+    .future-panel { padding: 28px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .future-kicker { color: var(--brand); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .future-panel > p { color: var(--muted); font-size: 13px; }
+    .mcp-map { display: grid; grid-template-columns: .8fr 28px 1fr 28px 1.15fr; align-items: stretch; gap: 8px; margin-top: 26px; }
+    .mcp-node { min-height: 150px; padding: 20px; background: var(--soft); border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: 4px; }
+    .mcp-node.primary { color: #fff; background: var(--brand-deep); border-color: var(--brand-deep); }
+    .mcp-node strong { display: block; margin-bottom: 8px; font-size: 14px; }
+    .mcp-node span { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .mcp-node.primary span { color: #d5e2e9; }
+    .mcp-arrow { display: grid; place-items: center; color: var(--brand); font-size: 18px; font-weight: 800; }
+    .mcp-tools { display: grid; gap: 7px; margin-top: 12px; }
+    .mcp-tools span { margin: 0; padding: 6px 8px; color: var(--brand-deep); background: var(--blue-soft); border-left: 2px solid var(--brand); }
+    .mcp-guardrail { margin-top: 16px; padding-top: 14px; color: var(--quiet); font-size: 11px; border-top: 1px solid var(--line); }
+    .pentest-flow { display: grid; gap: 0; margin-top: 24px; }
+    .pentest-step { position: relative; padding: 15px 16px 15px 46px; background: var(--soft); border: 1px solid var(--line); border-bottom: 0; }
+    .pentest-step:last-child { border-bottom: 1px solid var(--line); }
+    .pentest-step::before { content: attr(data-step); position: absolute; left: 14px; top: 15px; width: 22px; height: 22px; display: grid; place-items: center; color: #fff; background: var(--brand); border-radius: 50%; font-size: 9px; font-weight: 800; }
+    .pentest-step strong { display: block; font-size: 13px; }
+    .pentest-step span { color: var(--muted); font-size: 11px; }
+    .future-status { display: inline-block; margin-bottom: 16px; padding: 4px 8px; color: var(--amber); background: var(--amber-soft); font-size: 10px; font-weight: 800; border-radius: 3px; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .kpi { padding: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+    .kpi-head { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
+    .kpi-head strong { color: var(--brand-deep); }
+    .kpi-head span { color: var(--quiet); font-size: 11px; }
+    .kpi p { margin-bottom: 0; color: var(--muted); font-size: 12px; }
+    .formula { margin-top: 12px; padding: 9px 11px; color: var(--brand-deep); background: var(--blue-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+
+    .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--brand); }
+    .phase { min-height: 292px; padding: 28px; background: var(--paper); border-right: 1px solid var(--line); }
+    .phase:last-child { border-right: 0; }
+    .phase-id { color: var(--brand); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .phase ul { margin: 18px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .phase li { margin: 8px 0; }
+
+    .closing { color: #fff; background: var(--brand-deep); }
+    .closing .section-head p, .closing .lead { color: #c9d9e3; }
+    .decision-box { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; margin-top: 34px; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.2); }
+    .decision-box > div { min-height: 160px; padding: 25px; background: var(--brand-deep); }
+    .decision-box span { display: block; margin-bottom: 8px; color: #a9c1d0; font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+    .decision-box p { margin-bottom: 0; color: #e4edf2; font-size: 13px; }
+    .closing-line { margin: 44px 0 0; padding-top: 24px; font-family: var(--serif); font-size: 24px; border-top: 1px solid rgba(255,255,255,.24); }
+
+    .source-note { color: var(--quiet); font-size: 11px; }
+    .only-user, .only-management { display: block; }
+    body.mode-management .only-user { display: none; }
+    body.mode-user .only-management { display: none; }
+
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      main { grid-column: 1; }
+      .statement, .section-head, .evidence-grid, .future-grid { grid-template-columns: 1fr; gap: 26px; }
+      .metric-grid, .value-grid, .mode-grid { grid-template-columns: repeat(2, 1fr); }
+      .arch-row, .roadmap, .decision-box { grid-template-columns: 1fr; }
+      .mcp-map { grid-template-columns: 1fr; }
+      .mcp-arrow { min-height: 24px; transform: rotate(90deg); }
+      .arch-flow { display: none; }
+      .phase { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .decision-box > div { min-height: 0; }
+    }
+    @media (max-width: 680px) {
+      .topbar { padding: 0 14px; }
+      .brand-sub, .audience-button { display: none; }
+      .band { padding: 58px 20px; }
+      .hero { min-height: 92vh; }
+      .hero::after { display: none; }
+      h1 { font-size: 43px; }
+      .metric-grid, .value-grid, .governance-grid, .kpi-grid, .mode-grid { grid-template-columns: 1fr; }
+      .journey { grid-template-columns: 1fr 1fr; gap: 24px 0; }
+      .journey::before { display: none; }
+      .risk-row { grid-template-columns: 80px 1fr; }
+      .risk-owner { grid-column: 2; text-align: left; }
+      .capability-table { display: block; overflow-x: auto; }
+      .audience-tabs { overflow-x: auto; }
+      .audience-tab { white-space: nowrap; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      body { background: #fff; font-size: 10pt; }
+      .topbar, .sidebar, .progress, .audience-tabs { display: none !important; }
+      .layout { display: block; padding: 0; }
+      main { display: block; }
+      .band { padding: 14mm 0; break-inside: avoid; }
+      .hero { min-height: 250mm; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .audience-panel { display: block !important; }
+      .only-user, .only-management { display: block !important; }
+      .metric, .value-card, .governance-item, .kpi, .phase, .evidence-panel { break-inside: avoid; }
+      .section-head { margin-bottom: 20px; }
+      h1 { font-size: 42pt; }
+      h2 { font-size: 25pt; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <header class="topbar">
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true">PI</div>
+      <div>
+        <div class="brand-name">AI 代码安全扫描</div>
+        <div class="brand-sub">项目全景汇报 · 2026.08</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="audience-button" id="audienceMode" type="button" title="切换阅读视角">当前：全景视角</button>
+      <button class="icon-button" id="printButton" type="button" title="打印或导出 PDF" aria-label="打印或导出 PDF">⇩</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="汇报目录">
+      <div class="nav-label">REPORT INDEX</div>
+      <nav>
+        <a class="nav-link active" href="#overview"><span>01</span>执行摘要</a>
+        <a class="nav-link" href="#value"><span>02</span>用户价值</a>
+        <a class="nav-link" href="#architecture"><span>03</span>产品全景</a>
+        <a class="nav-link" href="#journey"><span>04</span>使用流程</a>
+        <a class="nav-link" href="#capability"><span>05</span>能力清单</a>
+        <a class="nav-link" href="#governance"><span>06</span>安全治理</a>
+        <a class="nav-link" href="#evidence"><span>07</span>工程现状</a>
+        <a class="nav-link" href="#future"><span>08</span>未来能力</a>
+        <a class="nav-link" href="#metrics"><span>09</span>成效口径</a>
+        <a class="nav-link" href="#roadmap"><span>10</span>推进路线</a>
+        <a class="nav-link" href="#decision"><span>11</span>管理决策</a>
+      </nav>
+      <div class="sidebar-note">内部汇报材料<br>数据基于当前仓库实现与文档<br>更新日期：2026-08-10</div>
+    </aside>
+
+    <main>
+      <section class="band hero" id="cover">
+        <div class="inner">
+          <div class="eyebrow">Project Panorama Report</div>
+          <h1>AI 代码安全扫描<br>项目全景汇报</h1>
+          <p class="hero-lead">以 IDE 插件承接增量扫描，以统一平台承接全量扫描，把风险发现、资源调度、积分消耗与治理报告纳入同一条管理闭环。</p>
+          <div class="hero-rule"></div>
+          <p class="hero-summary">本汇报面向管理层、研发、安全、运维及平台用户，覆盖项目价值、产品能力、技术架构、安全边界、工程现状与下一阶段决策。</p>
+          <div class="hero-meta">
+            <div><strong>汇报范围</strong>插件 · 平台 · 扫描引擎</div>
+            <div><strong>项目阶段</strong>工程能力已成型，进入生产验证</div>
+            <div><strong>核心原则</strong>统一基线 · 最小数据 · 全程留痕</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="overview">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Executive Summary</div><h2>执行摘要</h2></div>
+            <p><span class="section-index">01</span><br>项目已经从单点代码审查工具，演进为覆盖开发现场、集中管理与异步全量扫描的完整产品体系。</p>
+          </div>
+          <div class="statement">
+            <div class="statement-main">
+              <blockquote>不是再增加一套安全工具，而是建立一条可进入研发日常、可被组织治理的代码安全工作流。</blockquote>
+              <p>开发者通过 IDE 插件完成代码变更增量扫描；团队通过平台发起仓库级全量扫描。轻量、标准与 Release 三级模式分别匹配演示验证、日常使用和上线前全面审查，最终统一生成符合传音内部治理要求的标准化报告。</p>
+            </div>
+            <div class="decision-list">
+              <div class="decision-item"><strong>对业务</strong><span>在发布前暴露高风险问题，降低返工与事故处置成本。</span></div>
+              <div class="decision-item"><strong>对研发</strong><span>IDE 增量扫描与平台全量扫描按场景协同，任务进度可实时同步查看。</span></div>
+              <div class="decision-item"><strong>对管理</strong><span>通过积分控制全集团使用时的并发量，并统一管理优先级、队列、模型与报告。</span></div>
+            </div>
+          </div>
+          <div class="metric-grid only-management">
+            <div class="metric"><div class="metric-value">3</div><div class="metric-label">协同产品端</div><div class="metric-note">VS Code 插件 / 管理平台 / 扫描引擎</div></div>
+            <div class="metric"><div class="metric-value">6</div><div class="metric-label">标准扫描阶段</div><div class="metric-note">从基线加载到报告生成</div></div>
+            <div class="metric"><div class="metric-value">15</div><div class="metric-label">数据库迁移版本</div><div class="metric-note">覆盖账号、账本、任务、队列与凭据</div></div>
+            <div class="metric"><div class="metric-value">28</div><div class="metric-label">核心测试文件</div><div class="metric-note">平台 20 / 引擎 6 / 插件 2</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt" id="value">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Value by Audience</div><h2>一套平台，三类价值</h2></div>
+            <p><span class="section-index">02</span><br>同一份安全事实，以不同角色最关心的方式交付，减少安全、研发与管理之间的信息转换成本。</p>
+          </div>
+          <div class="audience-tabs" role="tablist" aria-label="按角色查看价值">
+            <button class="audience-tab active" data-panel="developer" role="tab" aria-selected="true">研发与项目成员</button>
+            <button class="audience-tab" data-panel="security" role="tab" aria-selected="false">安全与运营人员</button>
+            <button class="audience-tab" data-panel="management" role="tab" aria-selected="false">管理层</button>
+          </div>
+          <div class="audience-panel active" id="developer" role="tabpanel">
+            <div class="value-grid">
+              <article class="value-card"><div class="number">01</div><h3>低门槛进入日常</h3><p>从活动栏、命令面板或文件右键直接发起审查，不改变开发者的主要工作环境。</p><span class="outcome">结果：安全检查前移到编码与提交阶段</span></article>
+              <article class="value-card"><div class="number">02</div><h3>结果可直接行动</h3><p>输出严重等级、文件位置、影响、依据与修复建议，并支持本地查看和导出。</p><span class="outcome">结果：减少从“发现问题”到“修改代码”的跳转</span></article>
+              <article class="value-card"><div class="number">03</div><h3>范围自主可控</h3><p>覆盖暂存、未暂存和未跟踪变更；平台全量任务支持目录、模式与漏洞类型过滤。</p><span class="outcome">结果：按真实开发范围投入扫描资源</span></article>
+            </div>
+          </div>
+          <div class="audience-panel" id="security" role="tabpanel">
+            <div class="value-grid">
+              <article class="value-card"><div class="number">01</div><h3>统一检测基线</h3><p>插件与引擎共享安全基线 Skill，规则、证据要求与严重性标准集中维护。</p><span class="outcome">结果：降低不同团队、不同入口的判断偏差</span></article>
+              <article class="value-card"><div class="number">02</div><h3>完整研判闭环</h3><p>支持有效漏洞、误报、风险接受与已修复状态，并呈现跨文件 Source → Sink 证据。</p><span class="outcome">结果：从“扫描结果”升级为“风险台账”</span></article>
+              <article class="value-card"><div class="number">03</div><h3>任务过程可观测</h3><p>平台记录阶段、进度、文件数、代码行、执行日志与报告，任务状态由服务端校验。</p><span class="outcome">结果：异常可定位、责任可追踪、过程可复盘</span></article>
+            </div>
+          </div>
+          <div class="audience-panel" id="management" role="tabpanel">
+            <div class="value-grid">
+              <article class="value-card"><div class="number">01</div><h3>集团并发可治理</h3><p>平台提供积分余额、预冻结、消耗流水与计费规则；安全部面向全集团提供扫描能力时，可通过积分约束并发资源占用。</p><span class="outcome">结果：在公平使用与重点任务保障之间建立秩序</span></article>
+              <article class="value-card"><div class="number">02</div><h3>扫描策略可配置</h3><p>集中管理 SonarQube 集群、Fortify、AI / LLM、消息投递和三级扫描模式，并支持加急任务插队。</p><span class="outcome">结果：按业务阶段匹配成本、深度与时效</span></article>
+              <article class="value-card"><div class="number">03</div><h3>风险可度量</h3><p>扫描任务、漏洞等级、人工研判与报告形成统一数据入口，可进一步建设组织级指标。</p><span class="outcome">结果：为项目准入与安全经营分析提供数据底座</span></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band only-user" id="architecture">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Product & Architecture</div><h2>产品与技术全景</h2></div>
+            <p><span class="section-index">03</span><br>前台轻量触达、平台集中治理、引擎弹性执行，职责边界清晰，便于独立扩展。</p>
+          </div>
+          <div class="architecture" aria-label="项目架构图">
+            <div class="arch-row">
+              <article class="arch-node"><span class="tag">DEVELOPER EDGE</span><h3>IDE 插件 · 增量扫描</h3><p>围绕当前代码变更快速审查；任务、阶段与进度实时同步到平台统一查看。</p></article>
+              <article class="arch-node"><span class="tag">CONTROL PLANE</span><h3>管理平台 · 全量扫描</h3><p>统一承接仓库级任务、积分扣减、加急插队、实时进度、漏洞研判与治理报告。</p></article>
+              <article class="arch-node"><span class="tag">EXECUTION PLANE</span><h3>三级扫描能力</h3><p>按模式调度 SonarQube、Fortify、AI 与 LLM 语义扫描，兼顾吞吐、质量与发布保障。</p></article>
+            </div>
+            <div class="arch-flow"><span>本地变更</span><i></i><span>HTTPS / MQ</span><i></i><span>仓库全量</span></div>
+            <div class="shared-foundation"><strong>统一治理底座</strong><span>安全基线定义 Release 级语义扫描规范、漏洞证据、严重性与报告契约；消息队列支持普通与加急任务调度，积分机制控制集团并发，平台统一保存任务进度和治理结果。</span></div>
+          </div>
+          <div class="stack" aria-label="技术栈">
+            <span>TypeScript 6</span><span>VS Code Extension API</span><span>React</span><span>Go 1.26</span><span>MySQL 8.4</span><span>RabbitMQ</span><span>Kafka</span><span>SQLite</span><span>OpenAI Compatible API</span><span>Docker Compose</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt only-user" id="journey">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Scan Strategy & Journey</div><h2>双入口，三级扫描模式</h2></div>
+            <p><span class="section-index">04</span><br>IDE 插件负责增量、平台负责全量；再按项目阶段选择扫描深度，把有限资源用在最合适的位置。</p>
+          </div>
+          <div class="mode-grid" aria-label="三级扫描模式">
+            <article class="mode-card"><div class="mode-label">LIGHTWEIGHT · 轻量级</div><h3>适合 Demo / MVP</h3><p>面向演示、概念验证和早期项目，以快速反馈和较低资源占用为优先，并通过集群能力分担任务压力。</p><div class="mode-engine"><span>主要扫描能力</span><strong>SonarQube 集群</strong></div></article>
+            <article class="mode-card recommended"><div class="mode-label">STANDARD · 标准级 <em>推荐使用</em></div><h3>适合日常研发审查</h3><p>在静态分析基础上叠加 AI 研判，兼顾规则确定性、问题上下文和日常扫描效率，作为团队默认模式。</p><div class="mode-engine"><span>主要扫描能力</span><strong>Fortify + AI</strong></div></article>
+            <article class="mode-card release"><div class="mode-label">RELEASE · 发布级</div><h3>适合发版上线前</h3><p>围绕完整代码范围执行 LLM 语义级扫描，严格参照安全基线进行全面审查，服务发布准入与风险确认。</p><div class="mode-engine"><span>主要扫描能力</span><strong>LLM 语义扫描 + 安全基线</strong></div></article>
+          </div>
+          <div class="journey" aria-label="六步扫描流程">
+            <div class="journey-step"><div class="journey-dot">01</div><strong>加载基线</strong><span>确定本次检查标准</span></div>
+            <div class="journey-step"><div class="journey-dot">02</div><strong>收集上下文</strong><span>过滤代码与配置范围</span></div>
+            <div class="journey-step"><div class="journey-dot">03</div><strong>风险初筛</strong><span>确定性规则快速发现</span></div>
+            <div class="journey-step"><div class="journey-dot">04</div><strong>AI 深度审计</strong><span>分批分析数据流证据</span></div>
+            <div class="journey-step"><div class="journey-dot">05</div><strong>去重校验</strong><span>拒绝虚构路径与行号</span></div>
+            <div class="journey-step"><div class="journey-dot">06</div><strong>报告与研判</strong><span>回传、确认、修复闭环</span></div>
+          </div>
+          <p class="source-note" style="margin-top:34px">任务治理：插件与平台任务可在统一平台实时同步查看进度；加急任务支持插队；所有模式按规则消耗积分，以积分配额约束全集团并发量。最终报告统一满足传音内部安全治理要求。</p>
+        </div>
+      </section>
+
+      <section class="band only-user" id="capability">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Capability Map</div><h2>当前能力清单</h2></div>
+            <p><span class="section-index">05</span><br>以下状态区分“代码与界面已实现”和“仍需生产环境验证”，便于形成一致预期。</p>
+          </div>
+          <table class="capability-table">
+            <thead><tr><th>能力域</th><th>当前实现</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>开发现场审查</td><td>Git 变更收集、上下文截断、VS Code 当前模型、多轮只读分析、本地结果与导出</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>双扫描入口</td><td>IDE 插件面向代码变更增量扫描；平台面向 Git 仓库或代码压缩包全量扫描</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>三级扫描模式</td><td>轻量级：SonarQube 集群；标准级：Fortify + AI；Release 级：参照安全基线的 LLM 语义扫描</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>异步任务调度</td><td>插件与平台任务统一同步进度；普通 / 加急通道支持插队；RabbitMQ / Kafka 与 Outbox 重试</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>漏洞研判</td><td>等级与类型筛选、AI 判断依据、Source → Sink、有效 / 误报 / 接受 / 已修复状态</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>积分与并发</td><td>邮箱密码登录、个人接入密钥、积分余额、预冻结与流水；以积分配额控制集团级并发占用</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>治理报告</td><td>统一报告结构、证据、严重性、研判和修复要求，输出符合传音内部治理要求的报告</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>集中配置</td><td>AI 模型、连通性测试、密钥加密、扫描引擎、消息投递、用户余额与队列监控</td><td><span class="status done">已实现</span></td></tr>
+              <tr><td>生产运营</td><td>容量基线、可用性目标、告警阈值、备份恢复演练、灰度准入策略</td><td><span class="status verify">待验证与固化</span></td></tr>
+              <tr><td>组织级度量</td><td>覆盖率、修复周期、误报率、发布拦截与成本效率看板</td><td><span class="status plan">下一阶段</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="band alt only-user" id="governance">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Security by Design</div><h2>安全不是附加项</h2></div>
+            <p><span class="section-index">06</span><br>项目在数据、凭据、网络、模型、任务和审计六个方向设置边界，避免安全工具本身成为风险源。</p>
+          </div>
+          <div class="governance-grid">
+            <article class="governance-item"><div class="governance-icon">DATA</div><div><h3>最小化源码范围</h3><p>源码快照只保留代码、依赖清单、容器 / IaC 与安全配置；排除文档、媒体、构建产物及二进制文件。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">KEY</div><div><h3>凭据分层保护</h3><p>服务端仅保存用户接入密钥哈希；模型密钥使用 AES-256-GCM 加密；插件凭据进入 VS Code SecretStorage。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">NET</div><div><h3>远程内容网络约束</h3><p>Remote Skill 仅接受 HTTPS，拒绝 URL 凭据、私网、Loopback 与 Link-local，并限制重定向及内容大小。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">AI</div><div><h3>模型输出不盲信</h3><p>源码作为不可信数据；严格解析结构化 JSON；仅接受已提交文件与真实行号，减少提示注入和幻觉结果。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">IAM</div><div><h3>身份与所有权校验</h3><p>平台任务身份只从服务端会话读取；插件按个人接入密钥识别；服务端校验任务所有权与状态转换。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">LOG</div><div><h3>关键动作完整留痕</h3><p>任务创建、阶段更新与报告保存进入任务日志；Credit 变更形成账本流水，支持后续审计与追责。</p></div></article>
+            <article class="governance-item"><div class="governance-icon">RPT</div><div><h3>内部治理报告统一</h3><p>不同入口和扫描模式最终收敛到统一报告要求，确保漏洞证据、等级、研判、修复与审计信息符合传音内部治理规范。</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="evidence">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Engineering Evidence</div><h2>工程现状与成熟度</h2></div>
+            <p><span class="section-index">07</span><br>当前已经具备完整工程骨架和关键质量门禁，但“代码可运行”不等于“生产成效已验证”。</p>
+          </div>
+          <div class="evidence-grid">
+            <article class="evidence-panel">
+              <h3>已具备的工程证据</h3>
+              <ul class="evidence-list">
+                <li><b>✓</b><span>插件版本已推进至 0.0.16，包含 Webview 结果面板、聊天参与者、报告导出与平台接入密钥。</span><small>插件</small></li>
+                <li><b>✓</b><span>平台拥有 15 组数据库迁移，覆盖账户、Credit、扫描进度、报告、源码快照、队列与仓库凭据。</span><small>平台</small></li>
+                <li><b>✓</b><span>扫描任务支持普通 / 加急调度、插队、幂等重试和实时进度回传，插件与平台任务统一可见。</span><small>调度</small></li>
+                <li><b>✓</b><span>核心测试文件覆盖认证、密钥、模型代理、报告、扫描、队列、分析器与插件源码过滤。</span><small>质量</small></li>
+                <li><b>✓</b><span>本地 Web 管理平台和 API 已可运行，配置中心、任务、用户、Credit 等流程已有交互入口。</span><small>体验</small></li>
+              </ul>
+            </article>
+            <article class="evidence-panel">
+              <h3>成熟度判断</h3>
+              <p class="lead" style="font-size:16px">建议将当前阶段定义为：</p>
+              <div style="padding:22px;background:var(--blue-soft);border-left:3px solid var(--brand)">
+                <strong style="font-family:var(--serif);font-size:24px">MVP 完整，生产准备中</strong>
+                <p style="margin:8px 0 0;color:var(--muted);font-size:13px">核心业务链路与治理机制已成型；下一步重点不是继续堆叠功能，而是用真实团队、真实仓库和真实流量验证准确率、稳定性与成本。</p>
+              </div>
+              <div class="stack"><span>功能完整度：较高</span><span>安全设计：已覆盖关键边界</span><span>运营指标：待建立基线</span><span>生产韧性：待演练</span></div>
+            </article>
+          </div>
+          <div style="margin-top:30px">
+            <div class="risk-row"><div class="risk-level high">优先关注</div><p><strong>准确性与采用率</strong><br>若误报率偏高或结果无法直接行动，功能完整也难以形成持续使用。</p><div class="risk-owner">建议责任：安全产品 + 试点团队</div></div>
+            <div class="risk-row"><div class="risk-level medium">生产验证</div><p><strong>容量、重试与恢复</strong><br>需通过并发任务、消息重复投递、模型超时、平台中断和密钥丢失场景验证系统韧性。</p><div class="risk-owner">建议责任：平台工程 + 运维</div></div>
+            <div class="risk-row"><div class="risk-level low">持续治理</div><p><strong>规则与模型迭代</strong><br>统一基线需要版本、审批、灰度、回滚和效果对比机制，避免策略变化不可解释。</p><div class="risk-owner">建议责任：安全治理</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt" id="future">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Future Capability Blueprint</div><h2>从扫描平台走向 Agent 安全执行面</h2></div>
+            <p><span class="section-index">08</span><br>未来将通过 MCP 向 Agent 暴露受控安全能力，并以隔离 Kali 虚拟机完成灰盒、黑盒渗透与漏洞修复复测。</p>
+          </div>
+          <div class="future-grid">
+            <article class="future-panel">
+              <span class="future-status">规划能力 · MCP</span>
+              <div class="future-kicker">CONVERSATIONAL SECURITY OPERATIONS</div>
+              <h3>用户在 Agent 对话中完成安全任务</h3>
+              <p>用户无需切换到独立工作台，通过自然语言即可发起扫描、查询进度、查看漏洞证据和验证修复；MCP 只暴露受身份、积分、授权范围与审计策略约束的工具。</p>
+              <div class="mcp-map" aria-label="MCP 对话式安全能力图">
+                <div class="mcp-node">
+                  <strong>用户与 Agent</strong>
+                  <span>“扫描当前仓库”</span>
+                  <span>“解释这个高危漏洞”</span>
+                  <span>“验证修复是否有效”</span>
+                </div>
+                <div class="mcp-arrow" aria-hidden="true">→</div>
+                <div class="mcp-node primary">
+                  <strong>Security MCP Gateway</strong>
+                  <span>身份与项目授权</span>
+                  <span>参数校验与人工确认</span>
+                  <span>积分、限流与完整审计</span>
+                </div>
+                <div class="mcp-arrow" aria-hidden="true">→</div>
+                <div class="mcp-node">
+                  <strong>平台编排与安全工具</strong>
+                  <div class="mcp-tools">
+                    <span>创建增量 / 全量扫描</span>
+                    <span>查询任务与漏洞证据</span>
+                    <span>触发灰盒 / 黑盒复测</span>
+                    <span>生成治理与验证报告</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mcp-guardrail">治理边界：Agent 不直接取得平台密钥或虚拟机控制权；高风险动作需明确目标、授权范围和用户确认，所有调用进入统一审计日志。</div>
+            </article>
+            <article class="future-panel">
+              <span class="future-status">规划能力 · 渗透验证</span>
+              <div class="future-kicker">AUTOMATED REMEDIATION VERIFICATION</div>
+              <h3>隔离 Kali 虚拟机自动复测</h3>
+              <p>针对已确认漏洞或授权目标，平台自动启动一次性 Kali 虚拟机，在受控网络与时间窗口内执行验证，并以可复现证据判断修复是否真正生效。</p>
+              <div class="pentest-flow" aria-label="Kali 渗透测试验证流程">
+                <div class="pentest-step" data-step="01"><strong>确认授权边界</strong><span>目标、环境、时间窗、允许动作与停止条件</span></div>
+                <div class="pentest-step" data-step="02"><strong>启动隔离 Kali</strong><span>一次性虚拟机、网络隔离、工具与审计策略预置</span></div>
+                <div class="pentest-step" data-step="03"><strong>执行灰盒 / 黑盒扫描</strong><span>灰盒携带受限上下文；黑盒模拟外部攻击面</span></div>
+                <div class="pentest-step" data-step="04"><strong>采集可复现证据</strong><span>请求响应、攻击路径、影响范围与环境信息</span></div>
+                <div class="pentest-step" data-step="05"><strong>验证修复并销毁环境</strong><span>对比修复前后结果，输出报告并清理临时资产</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt only-management" id="metrics">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Outcome Measurement</div><h2>如何衡量项目成效</h2></div>
+            <p><span class="section-index">09</span><br>当前仓库没有真实经营数据，建议从试点首日开始按统一口径采集基线，避免只汇报扫描次数。</p>
+          </div>
+          <div class="kpi-grid">
+            <article class="kpi"><div class="kpi-head"><strong>风险发现前移率</strong><span>价值指标</span></div><p>在开发 / 合并前发现的有效高危问题，占全部有效高危问题的比例。</p><div class="formula">前移发现数 ÷ 全部有效高危数</div></article>
+            <article class="kpi"><div class="kpi-head"><strong>有效漏洞确认率</strong><span>质量指标</span></div><p>经人工确认有效的发现占已研判发现的比例，并按规则与模型版本拆分。</p><div class="formula">确认有效数 ÷ 已研判发现数</div></article>
+            <article class="kpi"><div class="kpi-head"><strong>高危平均修复周期</strong><span>效率指标</span></div><p>从发现到确认修复的平均时间，区分业务线、项目和发布阶段。</p><div class="formula">Σ（修复时间 - 发现时间）÷ 已修复高危数</div></article>
+            <article class="kpi"><div class="kpi-head"><strong>扫描覆盖率</strong><span>采用指标</span></div><p>约定周期内完成安全扫描的活跃项目，占应纳入项目总量的比例。</p><div class="formula">已覆盖活跃项目数 ÷ 应覆盖项目数</div></article>
+            <article class="kpi"><div class="kpi-head"><strong>单位有效发现成本</strong><span>经营指标</span></div><p>模型、计算与运营成本除以有效发现数，用于比较扫描模式与模型配置。</p><div class="formula">周期总成本 ÷ 确认有效发现数</div></article>
+            <article class="kpi"><div class="kpi-head"><strong>平台任务成功率</strong><span>稳定指标</span></div><p>剔除用户主动取消后，成功生成可用报告的任务比例，并跟踪 P95 耗时。</p><div class="formula">成功任务数 ÷ 可执行任务数</div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="roadmap">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Recommended Roadmap</div><h2>下一阶段推进路线</h2></div>
+            <p><span class="section-index">10</span><br>建议从真实试点出发，先建立质量与稳定基线，再扩大覆盖并接入研发治理。</p>
+          </div>
+          <div class="roadmap">
+            <article class="phase"><div class="phase-id">PHASE 01 · 0—4 周</div><h3>受控试点</h3><ul><li>选择 2—3 个技术栈不同的代表项目</li><li>明确数据范围、授权人与问题升级路径</li><li>逐条研判高危结果，建立误报与漏报样本</li><li>记录任务成功率、P95 耗时与单位成本</li></ul></article>
+            <article class="phase"><div class="phase-id">PHASE 02 · 5—8 周</div><h3>生产加固</h3><ul><li>完成并发、重投、超时与服务中断演练</li><li>固化主密钥、数据库与报告备份恢复流程</li><li>建立 Skill 版本审批、灰度与回滚机制</li><li>补齐监控告警、SLA 与运营值班手册</li></ul></article>
+            <article class="phase"><div class="phase-id">PHASE 03 · 9—12 周</div><h3>规模推广</h3><ul><li>按项目阶段配置轻量、标准与 Release 模式</li><li>以积分规则控制集团并发与重点任务插队</li><li>将 Release 级高可信高危结果接入发布准入</li><li>上线组织级覆盖、修复、积分与成本仪表盘</li></ul></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band closing" id="decision">
+        <div class="inner">
+          <div class="section-head">
+            <div><div class="eyebrow">Management Decision</div><h2>需要形成的三项共识</h2></div>
+            <p><span class="section-index">11</span><br>项目已具备进入真实试点的工程条件，下一阶段成功关键在组织协同和度量闭环。</p>
+          </div>
+          <div class="decision-box">
+            <div><span>01 · 试点授权</span><h3>批准受控生产试点</h3><p>明确试点团队、仓库范围、数据授权、安全负责人和四周验证周期。</p></div>
+            <div><span>02 · 成功标准</span><h3>以有效性而非扫描量验收</h3><p>围绕有效漏洞确认率、修复周期、覆盖率、任务成功率和单位成本建立基线。</p></div>
+            <div><span>03 · 治理机制</span><h3>建立跨部门产品责任组</h3><p>由研发、安全、平台和运维共同负责规则质量、系统稳定、用户采用与风险闭环。</p></div>
+          </div>
+          <p class="closing-line">增量扫描进入研发现场，全量扫描守住发布关口，统一报告满足传音内部治理要求。</p>
+          <p class="source-note" style="color:#9fb7c6;margin-top:28px">材料依据：项目 README、当前产品界面、插件 0.0.16 配置、平台 15 组数据库迁移与核心测试目录。文中成效 KPI 为建议采集口径，不代表已实现的生产指标。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const progress = document.getElementById('progress');
+    const links = [...document.querySelectorAll('.nav-link')];
+    const sections = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+
+    function updateScrollState() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = `${scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0}%`;
+      let current = sections[0]?.id;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= 130) current = section.id;
+      }
+      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${current}`));
+    }
+
+    document.querySelectorAll('.audience-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.audience-tab').forEach(item => {
+          item.classList.toggle('active', item === tab);
+          item.setAttribute('aria-selected', item === tab ? 'true' : 'false');
+        });
+        document.querySelectorAll('.audience-panel').forEach(panel => panel.classList.toggle('active', panel.id === tab.dataset.panel));
+      });
+    });
+
+    const audienceMode = document.getElementById('audienceMode');
+    const modes = [
+      { className: '', label: '当前：全景视角' },
+      { className: 'mode-management', label: '当前：管理视角' },
+      { className: 'mode-user', label: '当前：用户视角' }
+    ];
+    let modeIndex = 0;
+    audienceMode.addEventListener('click', () => {
+      document.body.classList.remove('mode-management', 'mode-user');
+      modeIndex = (modeIndex + 1) % modes.length;
+      if (modes[modeIndex].className) document.body.classList.add(modes[modeIndex].className);
+      audienceMode.textContent = modes[modeIndex].label;
+    });
+
+    document.getElementById('printButton').addEventListener('click', () => window.print());
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    window.addEventListener('resize', updateScrollState);
+    updateScrollState();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS scan_repository_credentials;

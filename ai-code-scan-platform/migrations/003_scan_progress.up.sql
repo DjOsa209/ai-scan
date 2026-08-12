@@ -1,0 +1,4 @@
+ALTER TABLE scan_tasks
+    ADD COLUMN stage VARCHAR(160) NOT NULL DEFAULT '等待扫描' AFTER status,
+    ADD COLUMN progress TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER stage,
+    ADD COLUMN status_message VARCHAR(500) NOT NULL DEFAULT '扫描任务已创建' AFTER progress;

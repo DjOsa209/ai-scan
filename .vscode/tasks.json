@@ -1,0 +1,66 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "plugin: compile",
+			"type": "npm",
+			"script": "compile",
+			"path": "plugin-raw",
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "plugin: watch",
+			"dependsOn": [
+				"plugin: watch:tsc",
+				"plugin: watch:esbuild"
+			],
+			"dependsOrder": "parallel",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "plugin: watch:tsc",
+			"type": "npm",
+			"script": "watch:tsc",
+			"path": "plugin-raw",
+			"isBackground": true,
+			"problemMatcher": "$tsc-watch"
+		},
+		{
+			"label": "plugin: watch:esbuild",
+			"type": "npm",
+			"script": "watch:esbuild",
+			"path": "plugin-raw",
+			"isBackground": true,
+			"problemMatcher": "$esbuild-watch"
+		},
+		{
+			"label": "platform: web dev",
+			"type": "shell",
+			"command": "npm --prefix ai-code-scan-platform/web run dev",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "platform: api dev",
+			"type": "shell",
+			"command": "source ai-code-scan-platform/.env && BUILTIN_SKILL_ROOT='${workspaceFolder}/plugin-raw/.github/skills/security-baseline-review' MODEL_KEY_PATH='${workspaceFolder}/ai-code-scan-platform/data/model-key' go -C ai-code-scan-platform run ./cmd/api",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "engine: dev",
+			"type": "shell",
+			"command": "source ai-code-scan-platform/.env && cd ai-scan-engine && QUEUE_PROTOCOL=\"${SCAN_QUEUE_PROTOCOL:-rabbitmq}\" QUEUE_BROKER_URL=\"$SCAN_QUEUE_BROKER_URL\" RABBITMQ_QUEUES=\"${SCAN_QUEUE_LITE_NAME:-security.scan.lite},${SCAN_QUEUE_STANDARD_NAME:-security.scan.standard},${SCAN_QUEUE_RELEASE_NAME:-security.scan.release}\" PLATFORM_BASE_URL=\"$PUBLIC_API_BASE_URL\" PLATFORM_ADMIN_TOKEN=\"$ADMIN_TOKEN\" ENGINE_WORK_ROOT='./data/work' ENGINE_DATABASE_PATH='./data/engine.db' MAX_CONCURRENCY=2 AI_ANALYSIS_ENABLED=true AI_MODEL_ACCESS_MODE=platform BUILTIN_SKILL_ROOT='../plugin-raw/.github/skills/security-baseline-review' AI_MODEL_CONTEXT_BYTES=120000 AI_MODEL_MAX_BATCHES=0 AI_MODEL_TIMEOUT_SECONDS=210 /usr/local/go/bin/go run ./cmd/engine",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

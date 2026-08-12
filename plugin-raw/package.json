@@ -1,0 +1,203 @@
+{
+  "name": "pi-sec-review",
+  "displayName": "pi-sec-review",
+  "description": "Review workspace changes with a local security Skill and VS Code language models.",
+  "version": "0.0.20",
+  "engines": {
+    "vscode": "^1.125.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pi-sec-review.runReview",
+        "title": "Run Security Review",
+        "category": "PI Security Review",
+        "icon": "$(play)"
+      },
+      {
+        "command": "pi-sec-review.runFullReview",
+        "title": "全量安全扫描",
+        "category": "PI Security Review"
+      },
+      {
+        "command": "pi-sec-review.runIncrementalReview",
+        "title": "增量安全扫描",
+        "category": "PI Security Review"
+      },
+      {
+        "command": "pi-sec-review.openLastResult",
+        "title": "Open Last Review Result",
+        "category": "PI Security Review"
+      },
+      {
+        "command": "pi-sec-review.exportLastResult",
+        "title": "Export Last Review Result",
+        "category": "PI Security Review"
+      },
+      {
+        "command": "pi-sec-review.setPlatformToken",
+        "title": "配置扫描接入密钥",
+        "category": "PI Security Review"
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "pi-sec-review.chatParticipant",
+        "name": "pi-security",
+        "fullName": "PI Security Review",
+        "description": "Review workspace changes with the configured local security Skill.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "review",
+            "description": "Review the current workspace changes."
+          }
+        ]
+      }
+    ],
+    "submenus": [
+      {
+        "id": "piSecReview.context",
+        "label": "PI Security Review"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pi-sec-review",
+          "title": "PI Security Review",
+          "icon": "resources/shield.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "pi-sec-review-results",
+          "title": "安全扫描",
+          "icon": "resources/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "pi-sec-review": [
+        {
+          "id": "piSecReview.view",
+          "name": "Security Review",
+          "type": "webview"
+        }
+      ],
+      "pi-sec-review-results": [
+        {
+          "id": "piSecReview.resultsView",
+          "name": "安全扫描结果",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "pi-sec-review.runReview",
+          "when": "view == piSecReview.view",
+          "group": "navigation@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "piSecReview.context",
+          "group": "piSecReview@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "piSecReview.context",
+          "group": "piSecReview@1"
+        }
+      ],
+      "piSecReview.context": [
+        {
+          "command": "pi-sec-review.runFullReview",
+          "group": "1_review@1"
+        },
+        {
+          "command": "pi-sec-review.runIncrementalReview",
+          "group": "1_review@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PI Security Review",
+      "properties": {
+        "piSecReview.skillPath": {
+          "type": "string",
+          "default": ".github/skills/security-baseline-review/SKILL.md",
+          "scope": "resource",
+          "description": "Path to the local SKILL.md file, relative to the workspace folder."
+        },
+        "piSecReview.platformUrl": {
+          "type": "string",
+          "default": "http://localhost:8081",
+          "scope": "resource",
+          "description": "Skill platform base URL used to download the default Skill when the local file is missing. HTTPS is required outside local development."
+        },
+        "piSecReview.maxContextCharacters": {
+          "type": "number",
+          "default": 120000,
+          "minimum": 10000,
+          "maximum": 500000,
+          "scope": "resource",
+          "description": "Maximum number of local Git diff, changed file, test, and configuration characters sent to the selected VS Code model."
+        },
+        "piSecReview.autoIncrementalScan.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Automatically scan source changes created after the Git workspace is opened. Reload the window after changing this setting."
+        },
+        "piSecReview.autoIncrementalScan.debounceSeconds": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 60,
+          "scope": "resource",
+          "description": "Seconds to wait after the latest source file change before starting an automatic incremental scan."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "dev": "node scripts/webview-preview.mjs",
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.125.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "typescript-eslint": "^8.61.1",
+    "eslint": "^10.5.0",
+    "esbuild": "^0.28.1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^6.0.3",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  }
+}

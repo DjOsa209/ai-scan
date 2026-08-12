@@ -1,0 +1,10 @@
+ALTER TABLE scan_tasks
+    DROP KEY ix_scan_tasks_actor_created,
+    DROP KEY ix_scan_tasks_source_created,
+    DROP COLUMN report_markdown,
+    DROP COLUMN charged_credits,
+    DROP COLUMN estimated_credits,
+    DROP COLUMN billing_mode,
+    DROP COLUMN actor_id,
+    DROP COLUMN actor_type,
+    DROP COLUMN source;
