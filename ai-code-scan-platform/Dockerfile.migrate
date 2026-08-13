@@ -1,6 +1,11 @@
 ARG DOCKER_LIBRARY=public.ecr.aws/docker/library
+ARG GOPROXY=https://goproxy.cn,direct
+ARG GOSUMDB=sum.golang.google.cn
 
 FROM ${DOCKER_LIBRARY}/golang:1.26-alpine AS build
+ARG GOPROXY
+ARG GOSUMDB
+RUN go env -w GOPROXY="${GOPROXY}" && go env -w GOSUMDB="${GOSUMDB}"
 RUN CGO_ENABLED=0 go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@v4.18.3
 
 FROM ${DOCKER_LIBRARY}/alpine:3.22

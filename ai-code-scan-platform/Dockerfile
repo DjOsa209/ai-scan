@@ -1,8 +1,13 @@
 ARG DOCKER_LIBRARY=public.ecr.aws/docker/library
+ARG GOPROXY=https://goproxy.cn,direct
+ARG GOSUMDB=sum.golang.google.cn
 
 FROM ${DOCKER_LIBRARY}/golang:1.26-alpine AS build
+ARG GOPROXY
+ARG GOSUMDB
 WORKDIR /src
 COPY go.mod go.sum ./
+RUN go env -w GOPROXY="${GOPROXY}" && go env -w GOSUMDB="${GOSUMDB}"
 RUN go mod download
 COPY cmd ./cmd
 COPY internal ./internal

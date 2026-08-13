@@ -22,6 +22,8 @@ services:
       dockerfile: Dockerfile.migrate
       args:
         DOCKER_LIBRARY: ${DOCKER_LIBRARY:-public.ecr.aws/docker/library}
+        GOPROXY: ${GOPROXY:-https://goproxy.cn,direct}
+        GOSUMDB: ${GOSUMDB:-sum.golang.google.cn}
     volumes:
       - ./migrations:/migrations:ro
     command:
@@ -45,6 +47,8 @@ services:
       context: .
       args:
         DOCKER_LIBRARY: ${DOCKER_LIBRARY:-public.ecr.aws/docker/library}
+        GOPROXY: ${GOPROXY:-https://goproxy.cn,direct}
+        GOSUMDB: ${GOSUMDB:-sum.golang.google.cn}
     environment:
       HTTP_ADDRESS: :8080
       MYSQL_DSN: ai_code_scan:${MYSQL_PASSWORD:-local-development-password}@tcp(mysql:3306)/ai_code_scan?parseTime=true

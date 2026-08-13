@@ -4,6 +4,8 @@ services:
       context: .
       args:
         DOCKER_LIBRARY: ${DOCKER_LIBRARY:-public.ecr.aws/docker/library}
+        GOPROXY: ${GOPROXY:-https://goproxy.cn,direct}
+        GOSUMDB: ${GOSUMDB:-sum.golang.google.cn}
     restart: unless-stopped
     env_file:
       - .env.example
