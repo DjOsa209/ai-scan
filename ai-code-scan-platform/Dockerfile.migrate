@@ -1,0 +1,8 @@
+ARG DOCKER_LIBRARY=public.ecr.aws/docker/library
+
+FROM ${DOCKER_LIBRARY}/golang:1.26-alpine AS build
+RUN CGO_ENABLED=0 go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@v4.18.3
+
+FROM ${DOCKER_LIBRARY}/alpine:3.22
+COPY --from=build /go/bin/migrate /usr/local/bin/migrate
+ENTRYPOINT ["migrate"]
