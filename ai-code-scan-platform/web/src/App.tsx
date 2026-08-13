@@ -20,6 +20,7 @@ import { authenticatedScanTasks, mergeRemoteTaskSummaries } from './scanTaskSour
 import { buildEvidenceSnippets, snippetUnavailableReason, type EvidenceLocation } from './sourceSnippets';
 import { buildPlatformScanInput } from './scanSubmission';
 import { mergeTaskDetail, scannedFileCount } from './scanDetail';
+import { averageTokenRate, formatScanElapsed, formatTokenCount, scanElapsedSeconds } from './scanProgress';
 import { isValidTimestamp, sanitizeUserVisibleText, userVisibleStage } from './taskPresentation';
 
 type NavKey = 'dashboard' | 'scan' | 'credits' | 'config' | 'users' | 'profile' | 'platform';
@@ -319,6 +320,7 @@ function mapPlatformScan(task: PlatformScanTask): ScanTask {
     mode: task.scanConfiguration?.mode === 'deep' ? '深度模式' : '标准模式',
     scanLevel: task.scanConfiguration?.scanLevel === 'lite' ? '轻量体验' : task.scanConfiguration?.scanLevel === 'release' || task.scanConfiguration?.mode === 'deep' ? '发布审计' : '标准检查',
     createdAt: formatBeijingDateTime(startedAt),
+    startedAt: task.createdAt,
     status,
     stage: userVisibleStage(task.stage),
     progress: task.progress,
@@ -2699,8 +2701,17 @@ function TaskResults({ task, showTokenUsage, onFinding, onOverlay, onDownload }:
 }
 
 function ScanProgress({ task }: { task: ScanTask }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+  const elapsedSeconds = task.startedAt ? scanElapsedSeconds(task.startedAt, now) : 0;
+  const elapsed = task.startedAt ? formatScanElapsed(elapsedSeconds) : task.duration;
+  const totalTokens = task.aiTotalTokens ?? 0;
+  const tokenRate = averageTokenRate(totalTokens, elapsedSeconds);
   const activeIndex = Math.min(scanStages.length - 1, Math.floor(task.progress / 10));
-  return <div className="scan-progress-card"><div className="scan-progress-head"><div><span className="agent-pulse"><Sparkles size={17} /></span><div><strong>安全扫描正在运行</strong><p>{userVisibleStage(task.stage)} · 已运行 {task.duration}</p></div></div><b>{task.progress}%</b></div><div className="progress-track large"><i style={{ width: `${task.progress}%` }} /></div><div className="stage-strip">{scanStages.map((stage, index) => <span key={stage} className={classNames(index < activeIndex && 'done', index === activeIndex && 'active')}><i>{index < activeIndex ? <Check size={11} /> : index === activeIndex ? <LoaderCircle className="stage-spinner" size={11} /> : index + 1}</i>{stage}</span>)}</div></div>;
+  return <div className="scan-progress-card"><div className="scan-progress-head"><div><span className="agent-pulse"><Sparkles size={17} /></span><div><strong>安全扫描正在运行</strong><p>{userVisibleStage(task.stage)}</p></div></div><b>{task.progress}%</b></div><div className="progress-live-stats"><span><Clock3 size={13} />已用时 <strong>{elapsed}</strong></span><span><Bot size={13} />累计 Token <strong>{formatTokenCount(totalTokens)}</strong></span><span><Activity size={13} />平均速率 <strong>{tokenRate.toLocaleString()} tokens/s</strong></span></div><div className="progress-track large"><i style={{ width: `${task.progress}%` }} /></div><div className="stage-strip">{scanStages.map((stage, index) => <span key={stage} className={classNames(index < activeIndex && 'done', index === activeIndex && 'active')}><i>{index < activeIndex ? <Check size={11} /> : index === activeIndex ? <LoaderCircle className="stage-spinner" size={11} /> : index + 1}</i>{stage}</span>)}</div></div>;
 }
 
 function QueueWaitCard({ task }: { task: ScanTask }) {

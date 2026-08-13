@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { execFileSync } from 'child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { test } from 'node:test';
 import * as os from 'os';
 import * as path from 'path';
@@ -8,6 +8,14 @@ import * as path from 'path';
 import { collectFullSourceSnapshot, collectFullWorkspaceContext, collectSourceSnapshot, collectWorkspaceContext } from '../gitChanges';
 import { WorkspaceSourceBaseline } from '../autoIncrementalScan';
 import { isScannableSourcePath } from '../sourceFilter';
+
+test('automatic incremental scanning activates when VS Code finishes starting', () => {
+	const manifest = JSON.parse(readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf8')) as {
+		activationEvents?: string[];
+	};
+
+	assert.ok(manifest.activationEvents?.includes('onStartupFinished'));
+});
 
 test('source upload includes code and security configuration but excludes unrelated content', () => {
 	for (const candidate of ['src/app.ts', 'server/main.go', 'Dockerfile', 'config/application.yml', 'package-lock.json']) {
@@ -79,6 +87,8 @@ test('workspace baseline ignores pre-existing changes and detects later edits', 
 		assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'app.ts')), undefined);
 		writeFileSync(path.join(repositoryRoot, 'app.ts'), 'export const version = 2;\n');
 		assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'app.ts')), 'app.ts');
+		writeFileSync(path.join(repositoryRoot, 'created.ts'), 'export const created = true;\n');
+		assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'created.ts')), 'created.ts');
 		writeFileSync(path.join(repositoryRoot, 'notes.md'), '# ignored\n');
 		assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'notes.md')), undefined);
 	} finally {

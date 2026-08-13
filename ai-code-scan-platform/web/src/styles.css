@@ -149,6 +149,9 @@ code, pre { font-family: 'IBM Plex Mono', monospace; }
 .scan-progress-head strong { display: block; font-size: 13px; }
 .scan-progress-head p { margin: 2px 0 0; font-size: 11px; color: #6c7a8d; }
 .scan-progress-head > b { color: var(--blue); font-size: 20px; }
+.progress-live-stats { margin: -2px 0 12px 44px; display: flex; flex-wrap: wrap; gap: 7px 18px; color: #728197; font-size: 10px; }
+.progress-live-stats span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.progress-live-stats strong { color: #35445a; font-size: 11px; }
 .agent-pulse { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--blue); color: #fff; box-shadow: 0 0 0 5px #e1edff; }
 .stage-strip { display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 12px; }
 .stage-strip span { position: relative; padding: 0 4px; text-align: center; color: #8490a0; font-size: 9px; }
@@ -161,6 +164,10 @@ code, pre { font-family: 'IBM Plex Mono', monospace; }
 .stage-strip span.active i { color: #fff; background: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 3px #dceaff; }
 .stage-spinner { animation: stage-spin .8s linear infinite; }
 @keyframes stage-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 720px) {
+  .progress-live-stats { margin-left: 0; gap: 7px 12px; }
+}
 
 .finding-section { padding: 20px 24px 28px; }
 .section-title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; }

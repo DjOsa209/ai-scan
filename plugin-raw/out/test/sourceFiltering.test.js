@@ -42,6 +42,10 @@ const path = __importStar(require("path"));
 const gitChanges_1 = require("../gitChanges");
 const autoIncrementalScan_1 = require("../autoIncrementalScan");
 const sourceFilter_1 = require("../sourceFilter");
+(0, node_test_1.test)('automatic incremental scanning activates when VS Code finishes starting', () => {
+    const manifest = JSON.parse((0, fs_1.readFileSync)(path.join(__dirname, '..', '..', 'package.json'), 'utf8'));
+    assert.ok(manifest.activationEvents?.includes('onStartupFinished'));
+});
 (0, node_test_1.test)('source upload includes code and security configuration but excludes unrelated content', () => {
     for (const candidate of ['src/app.ts', 'server/main.go', 'Dockerfile', 'config/application.yml', 'package-lock.json']) {
         assert.strictEqual((0, sourceFilter_1.isScannableSourcePath)(candidate), true, `${candidate} should be scanned`);
@@ -106,6 +110,8 @@ const sourceFilter_1 = require("../sourceFilter");
         assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'app.ts')), undefined);
         (0, fs_1.writeFileSync)(path.join(repositoryRoot, 'app.ts'), 'export const version = 2;\n');
         assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'app.ts')), 'app.ts');
+        (0, fs_1.writeFileSync)(path.join(repositoryRoot, 'created.ts'), 'export const created = true;\n');
+        assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'created.ts')), 'created.ts');
         (0, fs_1.writeFileSync)(path.join(repositoryRoot, 'notes.md'), '# ignored\n');
         assert.strictEqual(await baseline.changedPath(path.join(repositoryRoot, 'notes.md')), undefined);
     }

@@ -186,6 +186,7 @@ export interface ScanTask {
   mode: '标准模式' | '深度模式';
   scanLevel?: ScanLevel;
   createdAt: string;
+  startedAt?: string;
   status: ScanStatus;
   stage: string;
   progress: number;
