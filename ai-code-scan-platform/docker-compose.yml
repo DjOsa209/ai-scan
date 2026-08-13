@@ -16,6 +16,24 @@ services:
       timeout: 5s
       retries: 20
 
+  rabbitmq:
+    image: ${DOCKER_LIBRARY:-public.ecr.aws/docker/library}/rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-ai_scan}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-local-development-password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "127.0.0.1:${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   migrate:
     build:
       context: .
@@ -85,6 +103,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
       migrate:
         condition: service_completed_successfully
       key-init:
@@ -98,8 +118,12 @@ services:
     ports:
       - "${WEB_PORT:-5173}:80"
     depends_on:
-      - api
+      api:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   mysql_data:
   model_key_data:
+  rabbitmq_data:

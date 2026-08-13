@@ -15,7 +15,7 @@ curl http://localhost:8080/healthz
 curl http://localhost:8080/readyz
 ```
 
-Compose 会启动 MySQL 8.4、执行 `migrations/` 中的迁移，然后启动 API 和 Web。浏览器访问 `http://localhost:5173`。首次启动使用 `.env` 中的 `BOOTSTRAP_ADMIN_EMAIL` 和 `BOOTSTRAP_ADMIN_PASSWORD` 登录；密码至少 12 个字符。引导变量只创建不存在的管理员，不会覆盖已有密码或重复发放 Credit。默认值仅适合本地开发，部署前必须修改所有 Token 和密码。
+Compose 会启动 MySQL 8.4 和 RabbitMQ 4、执行 `migrations/` 中的迁移，然后启动 API 和 Web。浏览器访问 `http://localhost:5173`，RabbitMQ 管理界面位于 `http://localhost:5173/mq/`。首次启动使用 `.env` 中的 `BOOTSTRAP_ADMIN_EMAIL` 和 `BOOTSTRAP_ADMIN_PASSWORD` 登录；密码至少 12 个字符。引导变量只创建不存在的管理员，不会覆盖已有密码或重复发放 Credit。默认值仅适合本地开发，部署前必须修改所有 Token 和密码。
 
 不使用容器运行 API：
 
