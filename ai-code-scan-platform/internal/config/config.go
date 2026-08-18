@@ -16,6 +16,7 @@ type Config struct {
 	MySQLDSN                    string
 	AdminToken                  string
 	BuiltInSkillRoot            string
+	DistributionSkillsRoot      string
 	SkillMaxBytes               int64
 	SkillFetchTimeout           time.Duration
 	ReviewMaxBytes              int64
@@ -82,6 +83,7 @@ func load(configFile string) (Config, error) {
 		MySQLDSN:                    source.GetString("MYSQL_DSN"),
 		AdminToken:                  source.GetString("ADMIN_TOKEN"),
 		BuiltInSkillRoot:            valueOrDefault(source, "BUILTIN_SKILL_ROOT", "../plugin-raw/.github/skills/security-baseline-review"),
+		DistributionSkillsRoot:      valueOrDefault(source, "DISTRIBUTION_SKILLS_ROOT", "./skills"),
 		SkillMaxBytes:               256 * 1024,
 		SkillFetchTimeout:           15 * time.Second,
 		ReviewMaxBytes:              2 * 1024 * 1024,

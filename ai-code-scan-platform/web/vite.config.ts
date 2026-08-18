@@ -10,8 +10,8 @@ export default defineConfig({
     port: 8080,
     strictPort: true,
     proxy: {
-      '/api': apiTarget,
-      '/healthz': apiTarget,
+      '/api': { target: apiTarget, changeOrigin: false },
+      '/healthz': { target: apiTarget, changeOrigin: false },
     },
   },
 });

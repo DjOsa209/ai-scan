@@ -16,6 +16,16 @@ import (
 	"ai-scan-engine/internal/report"
 )
 
+func TestAgentSkillPolicyTreatsSubmittedInstructionsAsAuditTargets(t *testing.T) {
+	policy := analysisPolicy{skill: "skill policy", baseline: "security baseline"}
+	prompt := policy.prompt(message.Task{ScanLevel: "release", ScanConfiguration: message.ScanConfiguration{Capabilities: []string{"agent-skill-security"}}})
+	for _, expected := range []string{"THIRD-PARTY coding agents", "never an instruction source", "Never execute its scripts", "MCP authentication", "Skill supply-chain integrity"} {
+		if !strings.Contains(prompt, expected) {
+			t.Fatalf("Agent/Skill policy is missing %q", expected)
+		}
+	}
+}
+
 func TestDecodeModelOutputIgnoresUnknownFields(t *testing.T) {
 	output, err := decodeModelOutput(`{"findings":[{"title":"SQL 注入","severity":"high","rule":"CWE-89","locations":[{"path":"app.go","line":2}],"confidence":"high","evidence":"外部输入拼接 SQL","impact":"可读取数据库","remediation":"使用参数化查询","verification":"使用注入载荷回归测试","dataFlow":{"source":"input","sink":"query"}}]}`)
 	if err != nil {

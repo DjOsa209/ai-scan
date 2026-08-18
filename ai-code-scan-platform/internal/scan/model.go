@@ -7,6 +7,7 @@ type ActorType string
 type BillingMode string
 type ScanMode string
 type ScanLevel string
+type SecurityCapability string
 type Priority string
 
 const (
@@ -19,13 +20,17 @@ const (
 	BillingFree   BillingMode = "free"
 	BillingCredit BillingMode = "credit"
 
-	ScanModeStandard  ScanMode  = "standard"
-	ScanModeDeep      ScanMode  = "deep"
-	ScanLevelLite     ScanLevel = "lite"
-	ScanLevelStandard ScanLevel = "standard"
-	ScanLevelRelease  ScanLevel = "release"
-	PriorityNormal    Priority  = "normal"
-	PriorityUrgent    Priority  = "urgent"
+	ScanModeStandard             ScanMode           = "standard"
+	ScanModeDeep                 ScanMode           = "deep"
+	ScanLevelLite                ScanLevel          = "lite"
+	ScanLevelStandard            ScanLevel          = "standard"
+	ScanLevelRelease             ScanLevel          = "release"
+	CapabilityCodeSecurity       SecurityCapability = "code-security"
+	CapabilityThreatModeling     SecurityCapability = "threat-modeling"
+	CapabilityAgentSkillSecurity SecurityCapability = "agent-skill-security"
+	CapabilityRedTeam            SecurityCapability = "red-team"
+	PriorityNormal               Priority           = "normal"
+	PriorityUrgent               Priority           = "urgent"
 )
 
 type Status string
@@ -128,17 +133,18 @@ type TaskLog struct {
 }
 
 type ScanConfiguration struct {
-	ProductID          string    `json:"productId,omitempty"`
-	ProductName        string    `json:"productName,omitempty"`
-	Mode               ScanMode  `json:"mode"`
-	ScanLevel          ScanLevel `json:"scanLevel"`
-	Priority           Priority  `json:"priority"`
-	AIEnabled          bool      `json:"aiEnabled"`
-	AIModelID          string    `json:"aiModelId,omitempty"`
-	ExcludeDirectories []string  `json:"excludeDirectories"`
-	ExcludePatterns    []string  `json:"excludePatterns"`
-	ScanDirectories    []string  `json:"scanDirectories"`
-	VulnerabilityTypes []string  `json:"vulnerabilityTypes"`
+	ProductID          string               `json:"productId,omitempty"`
+	ProductName        string               `json:"productName,omitempty"`
+	Mode               ScanMode             `json:"mode"`
+	ScanLevel          ScanLevel            `json:"scanLevel"`
+	Priority           Priority             `json:"priority"`
+	AIEnabled          bool                 `json:"aiEnabled"`
+	AIModelID          string               `json:"aiModelId,omitempty"`
+	ExcludeDirectories []string             `json:"excludeDirectories"`
+	ExcludePatterns    []string             `json:"excludePatterns"`
+	ScanDirectories    []string             `json:"scanDirectories"`
+	VulnerabilityTypes []string             `json:"vulnerabilityTypes"`
+	Capabilities       []SecurityCapability `json:"capabilities"`
 }
 
 type DailyScanCount struct {
@@ -170,24 +176,25 @@ type Statistics struct {
 }
 
 type CreateTaskInput struct {
-	ProjectName        string    `json:"projectName"`
-	ProductID          string    `json:"productId,omitempty"`
-	ProductName        string    `json:"productName,omitempty"`
-	RepositoryURL      string    `json:"repositoryUrl"`
-	RepositoryToken    string    `json:"repositoryToken,omitempty"`
-	GitRef             string    `json:"gitRef"`
-	SkillSourceID      *int64    `json:"skillSourceId,omitempty"`
-	AIModelID          string    `json:"aiModelId,omitempty"`
-	EstimatedLines     int       `json:"estimatedLines,omitempty"`
-	Mode               ScanMode  `json:"mode,omitempty"`
-	ScanLevel          ScanLevel `json:"scanLevel,omitempty"`
-	Priority           Priority  `json:"priority,omitempty"`
-	AIEnabled          *bool     `json:"aiEnabled,omitempty"`
-	PremiumModel       *bool     `json:"premiumModel,omitempty"`
-	ExcludeDirectories []string  `json:"excludeDirectories,omitempty"`
-	ExcludePatterns    []string  `json:"excludePatterns,omitempty"`
-	ScanDirectories    []string  `json:"scanDirectories,omitempty"`
-	VulnerabilityTypes []string  `json:"vulnerabilityTypes,omitempty"`
+	ProjectName        string               `json:"projectName"`
+	ProductID          string               `json:"productId,omitempty"`
+	ProductName        string               `json:"productName,omitempty"`
+	RepositoryURL      string               `json:"repositoryUrl"`
+	RepositoryToken    string               `json:"repositoryToken,omitempty"`
+	GitRef             string               `json:"gitRef"`
+	SkillSourceID      *int64               `json:"skillSourceId,omitempty"`
+	AIModelID          string               `json:"aiModelId,omitempty"`
+	EstimatedLines     int                  `json:"estimatedLines,omitempty"`
+	Mode               ScanMode             `json:"mode,omitempty"`
+	ScanLevel          ScanLevel            `json:"scanLevel,omitempty"`
+	Priority           Priority             `json:"priority,omitempty"`
+	AIEnabled          *bool                `json:"aiEnabled,omitempty"`
+	PremiumModel       *bool                `json:"premiumModel,omitempty"`
+	ExcludeDirectories []string             `json:"excludeDirectories,omitempty"`
+	ExcludePatterns    []string             `json:"excludePatterns,omitempty"`
+	ScanDirectories    []string             `json:"scanDirectories,omitempty"`
+	VulnerabilityTypes []string             `json:"vulnerabilityTypes,omitempty"`
+	Capabilities       []SecurityCapability `json:"capabilities,omitempty"`
 }
 
 type UpdateTaskInput struct {

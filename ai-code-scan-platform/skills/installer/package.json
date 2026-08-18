@@ -1,0 +1,12 @@
+{
+  "name": "@secscan/skill-installer",
+  "version": "1.0.0",
+  "description": "Cross-platform installer for SecScan Agent Skills",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "secscan-skill": "bin/install.js"
+  }
+}

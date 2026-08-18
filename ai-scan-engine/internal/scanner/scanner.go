@@ -252,7 +252,8 @@ func (scanner *Scanner) ScanDirectory(ctx context.Context, root string, configur
 			}
 			return nil
 		}
-		if !inScope(relative, configuration.ScanDirectories) || excluded(relative, configuration.ExcludePatterns) || !isScannableSourcePath(relative) {
+		agentAsset := slices.Contains(configuration.Capabilities, "agent-skill-security") && isAgentSkillAsset(relative)
+		if !inScope(relative, configuration.ScanDirectories) || excluded(relative, configuration.ExcludePatterns) || (!isScannableSourcePath(relative) && !agentAsset) || !capabilityPathAllowed(relative, configuration.Capabilities) {
 			return nil
 		}
 		info, err := entry.Info()
@@ -276,6 +277,27 @@ func (scanner *Scanner) ScanDirectory(ctx context.Context, root string, configur
 		return nil
 	})
 	return findings, checked, skipped, err
+}
+
+func capabilityPathAllowed(relative string, capabilities []string) bool {
+	if !slices.Contains(capabilities, "agent-skill-security") {
+		return true
+	}
+	return isAgentSkillAsset(relative)
+}
+
+func isAgentSkillAsset(relative string) bool {
+	lower := strings.ToLower(filepath.ToSlash(relative))
+	base := path.Base(lower)
+	if base == "agents.md" || base == "claude.md" || base == "copilot-instructions.md" || base == ".mcp.json" || strings.Contains(base, "mcp") {
+		return true
+	}
+	for _, marker := range []string{"/.github/agents/", "/.github/prompts/", "/.github/skills/", "/.claude/", "/agents/", "/prompts/", "/skills/", "/mcp/", "/tools/"} {
+		if strings.Contains("/"+lower, marker) {
+			return true
+		}
+	}
+	return strings.HasSuffix(lower, ".agent.md") || strings.HasSuffix(lower, ".prompt.md") || strings.HasSuffix(lower, "skill.md")
 }
 
 func (scanner *Scanner) scanFile(filePath, relative string, categories []string) ([]report.Finding, bool, error) {

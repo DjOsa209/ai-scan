@@ -188,6 +188,7 @@ func (service *Service) RescanForUser(ctx context.Context, id string) (Task, err
 		Mode: original.ScanConfiguration.Mode, ScanLevel: original.ScanConfiguration.ScanLevel, Priority: original.ScanConfiguration.Priority,
 		ExcludeDirectories: original.ScanConfiguration.ExcludeDirectories, ExcludePatterns: original.ScanConfiguration.ExcludePatterns,
 		ScanDirectories: original.ScanConfiguration.ScanDirectories, VulnerabilityTypes: original.ScanConfiguration.VulnerabilityTypes,
+		Capabilities: original.ScanConfiguration.Capabilities,
 	}
 	input.AIEnabled = &original.ScanConfiguration.AIEnabled
 	if strings.HasPrefix(original.RepositoryURL, "archive://") {
@@ -266,6 +267,16 @@ func validateBillingInput(input CreateTaskInput) error {
 	}
 	if len(input.VulnerabilityTypes) > 64 {
 		return fmt.Errorf("vulnerabilityTypes must contain at most 64 items")
+	}
+	if len(input.Capabilities) > 4 {
+		return fmt.Errorf("capabilities must contain at most 4 items")
+	}
+	for _, capability := range input.Capabilities {
+		switch capability {
+		case CapabilityCodeSecurity, CapabilityThreatModeling, CapabilityAgentSkillSecurity, CapabilityRedTeam:
+		default:
+			return fmt.Errorf("unsupported security capability %q", capability)
+		}
 	}
 	return nil
 }
@@ -416,6 +427,18 @@ func normalizedScanConfiguration(input CreateTaskInput) ScanConfiguration {
 		return result
 	}
 	aiEnabled := input.AIEnabled == nil || *input.AIEnabled
+	capabilities := input.Capabilities
+	if len(capabilities) == 0 {
+		capabilities = []SecurityCapability{CapabilityCodeSecurity}
+	}
+	normalizedCapabilities := make([]SecurityCapability, 0, len(capabilities))
+	seenCapabilities := make(map[SecurityCapability]bool, len(capabilities))
+	for _, capability := range capabilities {
+		if !seenCapabilities[capability] {
+			seenCapabilities[capability] = true
+			normalizedCapabilities = append(normalizedCapabilities, capability)
+		}
+	}
 	return ScanConfiguration{
 		ProductID: strings.TrimSpace(input.ProductID), ProductName: strings.TrimSpace(input.ProductName),
 		Mode: mode, ScanLevel: scanLevel, Priority: priority, AIEnabled: aiEnabled, AIModelID: strings.TrimSpace(input.AIModelID),
@@ -423,6 +446,7 @@ func normalizedScanConfiguration(input CreateTaskInput) ScanConfiguration {
 		ExcludePatterns:    normalize(input.ExcludePatterns),
 		ScanDirectories:    normalize(input.ScanDirectories),
 		VulnerabilityTypes: normalize(input.VulnerabilityTypes),
+		Capabilities:       normalizedCapabilities,
 	}
 }
 

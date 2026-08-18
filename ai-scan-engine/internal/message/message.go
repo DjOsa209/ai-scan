@@ -36,6 +36,7 @@ type ScanConfiguration struct {
 	ExcludePatterns    []string `json:"excludePatterns"`
 	ScanDirectories    []string `json:"scanDirectories"`
 	VulnerabilityTypes []string `json:"vulnerabilityTypes"`
+	Capabilities       []string `json:"capabilities"`
 }
 
 type Callbacks struct {

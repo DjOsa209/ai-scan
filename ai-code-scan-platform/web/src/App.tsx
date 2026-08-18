@@ -22,11 +22,13 @@ import { buildPlatformScanInput } from './scanSubmission';
 import { mergeTaskDetail, scannedFileCount } from './scanDetail';
 import { averageTokenRate, formatScanElapsed, formatTokenCount, scanElapsedSeconds } from './scanProgress';
 import { isValidTimestamp, sanitizeUserVisibleText, userVisibleStage } from './taskPresentation';
+import { CapabilityQuickLaunch, SecurityCapabilitiesPrototype, type SecurityCapability } from './SecurityCapabilitiesPrototype';
+import { SkillInstaller } from './SkillInstaller';
 
-type NavKey = 'dashboard' | 'scan' | 'credits' | 'config' | 'users' | 'profile' | 'platform';
+type NavKey = 'dashboard' | 'scan' | 'capabilities' | 'skills' | 'credits' | 'config' | 'users' | 'profile' | 'platform';
 type TaskPageState = { type: 'logs' | 'report'; task: ScanTask; loading?: boolean; error?: string } | null;
 
-const navKeys: NavKey[] = ['dashboard', 'scan', 'credits', 'config', 'users', 'profile', 'platform'];
+const navKeys: NavKey[] = ['dashboard', 'scan', 'capabilities', 'skills', 'credits', 'config', 'users', 'profile', 'platform'];
 const runtimeSections = ['AI 模型', '扫描引擎', '消息投递'] as const;
 
 const models = ['SecAgent-Pro', 'SecAgent-Lite', 'DeepAudit-R1'];
@@ -394,6 +396,7 @@ function App() {
   const saveInFlightRef = useRef(false);
   const [activeTaskId, setActiveTaskId] = useState(tasks[0]?.id ?? '');
   const [showCreate, setShowCreate] = useState(false);
+  const [activeCapability, setActiveCapability] = useState<SecurityCapability>('threat-modeling');
   const [finding, setFinding] = useState<Finding | null>(null);
   const [taskPage, setTaskPage] = useState<TaskPageState>(null);
   const [toast, setToast] = useState('');
@@ -665,8 +668,10 @@ function App() {
       <Header nav={nav} onNav={(nextNav) => { setTaskPage(null); setNav(nextNav); }} onNewScan={() => { setTaskPage(null); setShowCreate(true); }} user={currentUser} account={account} unread={notifications.filter((item) => item.userId === currentUser.id && !item.read).length} onLogout={logout} />
       <main className="main-content">
         {taskPage ? <TaskDetailPage page={taskPage} showTokenUsage={currentUser.role === '管理员'} onBack={() => setTaskPage(null)} onSwitch={(type) => void openTaskPage({ type, task: taskPage.task })} onDownload={downloadReport} /> : <>
-          {nav === 'dashboard' && <Dashboard user={currentUser} account={account} tasks={displayedTasks} notifications={notifications} onNewScan={() => setShowCreate(true)} onNav={setNav} />}
+          {nav === 'dashboard' && <><CapabilityQuickLaunch onOpen={(capability) => { setActiveCapability(capability); setNav('capabilities'); }} /><Dashboard user={currentUser} account={account} tasks={displayedTasks} notifications={notifications} onNewScan={() => setShowCreate(true)} onNav={setNav} /></>}
           {nav === 'scan' && <ScanWorkspace tasks={displayedTasks} activeTask={activeTask} showTokenUsage={currentUser.role === '管理员'} hasMoreTasks={hasMoreScanTasks} loadingMoreTasks={loadingMoreScanTasks} onLoadMore={() => void loadMoreScanTasks()} onSelectTask={setActiveTaskId} onFinding={setFinding} onNewScan={() => setShowCreate(true)} onOverlay={(request) => void openTaskPage(request)} onDownload={downloadReport} onRescan={(task) => void rescan(task)} onDelete={deleteTask} />}
+          {nav === 'capabilities' && <SecurityCapabilitiesPrototype initialCapability={activeCapability} onBack={() => setNav('dashboard')} />}
+          {nav === 'skills' && <SkillInstaller />}
           {nav === 'credits' && <CreditCenter account={account} transactions={transactions.filter((item) => item.userId === currentUser.id)} />}
           {nav === 'config' && currentUser.role === '管理员' && <RuntimeConfiguration engines={engines} scanQueue={scanQueue} models={aiModels} feishuApplication={feishuApplication} onEngines={setEngines} onScanQueue={setScanQueue} onModels={setAIModels} onFeishuApplication={setFeishuApplication} notify={notify} />}
           {nav === 'users' && <UserManagement users={users} currentUser={currentUser} onUsers={setUsers} notify={notify} />}
@@ -683,7 +688,7 @@ function App() {
 }
 
 function Header({ nav, onNav, onNewScan, user, account, unread, onLogout }: { nav: NavKey; onNav: (nav: NavKey) => void; onNewScan: () => void; user: PlatformUser; account: CreditAccount; unread: number; onLogout: () => void }) {
-  const pageNames: Record<NavKey, string> = { dashboard: '安全概览', scan: '扫描任务', credits: 'Credit 管理', config: '配置中心', users: '用户管理', profile: '个人中心', platform: '系统管理' };
+  const pageNames: Record<NavKey, string> = { dashboard: '安全概览', scan: '扫描任务', capabilities: '专项安全能力', skills: 'Skill 安装', credits: 'Credit 管理', config: '配置中心', users: '用户管理', profile: '个人中心', platform: '系统管理' };
   return <>
     <aside className="sidebar">
       <div className="brand"><span className="brand-mark"><ShieldCheck size={21} /></span><div><strong>SecScan Cloud</strong><small>企业代码安全平台</small></div></div>
@@ -691,6 +696,8 @@ function Header({ nav, onNav, onNewScan, user, account, unread, onLogout }: { na
         <span className="nav-section">工作区</span>
         <button className={nav === 'dashboard' ? 'active' : ''} onClick={() => onNav('dashboard')}><LayoutDashboard size={18} />安全概览</button>
         <button className={nav === 'scan' ? 'active' : ''} onClick={() => onNav('scan')}><Bot size={18} />扫描任务</button>
+        <button className={nav === 'capabilities' ? 'active' : ''} onClick={() => onNav('capabilities')}><Network size={18} />专项能力</button>
+        <button className={nav === 'skills' ? 'active' : ''} onClick={() => onNav('skills')}><Download size={18} />Skill 安装</button>
         <button className={nav === 'credits' ? 'active' : ''} onClick={() => onNav('credits')}><Coins size={18} />Credit 管理</button>
         <span className="nav-section">管理</span>
         {user.role === '管理员' && <button className={nav === 'config' ? 'active' : ''} onClick={() => onNav('config')}><Settings2 size={18} />配置中心</button>}

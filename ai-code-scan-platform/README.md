@@ -1,6 +1,6 @@
 # AI 代码扫描平台
 
-Go + MySQL 实现的代码扫描控制面，以及 React + TypeScript 实现的商业化 AI 代码安全扫描平台。当前版本提供 Remote Skill 注册、不可变版本管理、插件扫描任务生命周期、Git 仓库全量扫描任务 API，以及可交互的账号、计费、扫描与漏洞研判界面。
+Go + MySQL 实现的代码扫描控制面，以及 React + TypeScript 实现的商业化 AI 代码安全扫描平台。当前版本提供 Remote Skill 注册、不可变版本管理、插件扫描任务生命周期、Git 仓库全量扫描、证据驱动威胁建模，以及可交互的账号、计费、扫描与风险研判界面。
 
 插件在本地构建受限代码上下文，并交给 VS Code Chat/Agent 窗口当前选择的模型。源码快照只保留代码、依赖清单、容器/IaC 和安全相关配置文件，文档、媒体、构建产物及二进制文件不会上传。扫描结束后，插件上传任务元数据、结构化报告和经过过滤的证据源码快照。
 
@@ -67,6 +67,20 @@ Remote Skill 下载仅接受 HTTPS，禁止 URL 凭据、私网/Loopback/Link-lo
 每个用户在个人中心轮换自己的扫描接入密钥。服务端仅保存密钥哈希；VS Code 插件将密钥保存到 SecretStorage，并作为 `/api/v1/plugin/*` 的 Bearer 凭据。服务端按密钥识别用户、校验任务所有权并统计 Credit 消耗。可在命令面板运行 **PI Security Review: 配置扫描接入密钥** 更换或清除本地密钥。任务列表只返回元数据和 `hasReport`，不直接返回报告内容。
 
 任务状态转换由服务端校验，进度不能倒退。当前阶段包括加载安全基线、收集变更上下文、安全风险初筛、AI 深度审计、漏洞去重与报告生成；完成和失败都会写回平台。
+
+## 威胁建模
+
+“专项安全能力 → 威胁建模”支持从已完成扫描保存的源码证据、文本型设计文档（MD、TXT、JSON、YAML、XML 等）或两者组合创建模型。运行时服务端固定输入快照，提取组件、数据流、关键资产和信任边界，再对证据执行可解释的 STRIDE 规则，生成威胁、攻击路径、文件行号证据和处置建议。
+
+模型和每次运行分别持久化，支持重复运行、人工补录威胁、开放/已解决/已驳回状态流转及 Markdown 报告导出。当前实现是只读静态分析：不会执行被测代码，也不会连接或攻击目标系统。完整仓库索引、PDF / DOCX 解析、异步任务队列、版本差异和 LLM 辅助推理尚未包含在 MVP 中。
+
+登录会话下可用的接口为：
+
+- `GET /api/v1/threat-models`、`POST /api/v1/threat-models`
+- `GET /api/v1/threat-models/{id}`、`POST /api/v1/threat-models/{id}/runs`
+- `PATCH /api/v1/threat-models/{id}/threats/{threatId}`、`POST /api/v1/threat-models/{id}/threats`
+
+详细产品边界和演进方向见 [专项安全能力设计](docs/security-capabilities-design.md)。
 
 ## 旧版插件审查网关
 

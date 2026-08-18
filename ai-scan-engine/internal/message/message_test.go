@@ -3,13 +3,16 @@ package message
 import "testing"
 
 func TestDecodeValidatesEnvelope(t *testing.T) {
-	payload := []byte(`{"schemaVersion":"1.0","eventId":"event-1","eventType":"scan.requested","task":{"id":"task-1","repositoryUrl":"https://example.com/repo.git","gitRef":"main","callbacks":{"statusUrl":"/status","reportUrl":"/report"}}}`)
+	payload := []byte(`{"schemaVersion":"1.0","eventId":"event-1","eventType":"scan.requested","task":{"id":"task-1","repositoryUrl":"https://example.com/repo.git","gitRef":"main","scanConfiguration":{"capabilities":["agent-skill-security"]},"callbacks":{"statusUrl":"/status","reportUrl":"/report"}}}`)
 	envelope, err := Decode(payload)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if envelope.Task.ID != "task-1" {
 		t.Fatalf("unexpected task: %#v", envelope.Task)
+	}
+	if len(envelope.Task.ScanConfiguration.Capabilities) != 1 || envelope.Task.ScanConfiguration.Capabilities[0] != "agent-skill-security" {
+		t.Fatalf("unexpected capabilities: %#v", envelope.Task.ScanConfiguration.Capabilities)
 	}
 }
 

@@ -114,6 +114,27 @@ func TestNormalizedScanConfigurationAssignsIndependentScanLevels(t *testing.T) {
 	}
 }
 
+func TestNormalizedScanConfigurationDefaultsAndDeduplicatesCapabilities(t *testing.T) {
+	defaultConfiguration := normalizedScanConfiguration(CreateTaskInput{})
+	if len(defaultConfiguration.Capabilities) != 1 || defaultConfiguration.Capabilities[0] != CapabilityCodeSecurity {
+		t.Fatalf("expected code security default, got %#v", defaultConfiguration.Capabilities)
+	}
+
+	configuration := normalizedScanConfiguration(CreateTaskInput{Capabilities: []SecurityCapability{
+		CapabilityThreatModeling, CapabilityAgentSkillSecurity, CapabilityThreatModeling, CapabilityRedTeam,
+	}})
+	if len(configuration.Capabilities) != 3 || configuration.Capabilities[0] != CapabilityThreatModeling || configuration.Capabilities[2] != CapabilityRedTeam {
+		t.Fatalf("expected ordered unique capabilities, got %#v", configuration.Capabilities)
+	}
+}
+
+func TestValidateBillingInputRejectsUnknownCapability(t *testing.T) {
+	err := validateBillingInput(CreateTaskInput{Capabilities: []SecurityCapability{"remote-command-execution"}})
+	if err == nil {
+		t.Fatal("expected unsupported capability to be rejected")
+	}
+}
+
 func TestValidateSourceSnapshotAcceptsEvidenceFiles(t *testing.T) {
 	err := validateSourceSnapshot(SourceSnapshot{
 		GitStatus: "M changed.go",

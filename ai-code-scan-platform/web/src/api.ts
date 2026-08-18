@@ -72,6 +72,7 @@ export interface PlatformScanTask {
     excludePatterns?: string[];
     scanDirectories?: string[];
     vulnerabilityTypes?: string[];
+	capabilities?: string[];
   };
 }
 
@@ -169,6 +170,24 @@ export interface UserAPIKeyStatus {
   lastLoginAt?: string;
 }
 
+export interface DistributionSkill {
+  name: string;
+  title: string;
+  description: string;
+  apiPath: string;
+  skillUrl: string;
+  installPrompt: string;
+  installCommand: string;
+  downloadUrl: string;
+}
+
+export async function loadDistributionSkills(): Promise<DistributionSkill[]> {
+  const response = await fetch('/api/v1/skills', { credentials: 'same-origin' });
+  if (!response.ok) throw await apiError(response, '加载可安装 Skill 失败');
+  const payload = await response.json() as { skills: DistributionSkill[] };
+  return payload.skills;
+}
+
 export interface AdminCreditAccount extends CreditAccount {
   email: string;
   role: 'user' | 'admin';
@@ -194,6 +213,120 @@ export interface CreatePlatformScanInput {
   excludePatterns: string[];
   scanDirectories: string[];
   vulnerabilityTypes: string[];
+	capabilities?: string[];
+}
+
+export type ThreatModelStatus = 'draft' | 'running' | 'completed' | 'failed' | 'stopped';
+export type ThreatRunStatus = 'running' | 'completed' | 'failed' | 'stopped';
+export type ThreatStatus = 'open' | 'resolved' | 'dismissed';
+export type ThreatSeverity = 'critical' | 'high' | 'medium' | 'low';
+
+export interface ThreatModelDocument {
+  name: string;
+  content?: string;
+}
+
+export interface ThreatModelConfiguration {
+  sourceScanTaskId?: string;
+  scopeDocuments: ThreatModelDocument[];
+  scopeSummary?: string;
+  environment: 'production' | 'staging' | 'development';
+  mode: 'baseline' | 'incremental';
+}
+
+export interface ThreatModelThreat {
+  id: string;
+  title: string;
+  severity: ThreatSeverity;
+  status: ThreatStatus;
+  stride: string[];
+  statement: string;
+  source: string;
+  action: string;
+  impact: string;
+  prerequisites: string[];
+  assets: string[];
+  goals: string[];
+  evidence: string[];
+  recommendation: string;
+  owner: string;
+  confidence: string;
+  assumption: boolean;
+  updatedAt: string;
+}
+
+export interface ThreatModelResult {
+  summary: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    open: number;
+    systemObjects: number;
+    assumptions: number;
+    strideDistribution: Record<string, number>;
+  };
+  systemOverview: {
+    purpose: string;
+    capabilities: string[];
+    designIntent: string;
+    architecture: string;
+    components: Array<{ id: string; name: string; kind: string; purpose: string; evidence: string[] }>;
+    trustBoundaries: Array<{ name: string; description: string }>;
+    dataFlows: Array<{ source: string; target: string; data: string; protection: string; evidence: string[] }>;
+    securityPosture: string[];
+    sensitiveAssets: string[];
+    assumptions: string[];
+  };
+  threats: ThreatModelThreat[];
+  attackPaths: Array<{
+    id: string;
+    title: string;
+    severity: ThreatSeverity;
+    threatId: string;
+    steps: Array<{ title: string; detail: string }>;
+    controlPoint: string;
+    recommendation: string;
+  }>;
+  preflight: Array<{ name: string; status: string; detail: string }>;
+  logs: Array<{ time: string; stage: string; message: string }>;
+  coverage: { sourceFiles: number; scopeDocuments: number; evidence: string[]; limitations: string[] };
+}
+
+export interface ThreatModelRun {
+  id: string;
+  threatModelId: string;
+  status: ThreatRunStatus;
+  stage: string;
+  progress: number;
+  statusMessage: string;
+  configuration: ThreatModelConfiguration;
+  result?: ThreatModelResult;
+  errorMessage?: string;
+  startedAt: string;
+  completedAt?: string;
+}
+
+export interface ThreatModelRunSummary {
+  id: string;
+  status: ThreatRunStatus;
+  stage: string;
+  progress: number;
+  statusMessage: string;
+  threatCount: number;
+  startedAt: string;
+  completedAt?: string;
+}
+
+export interface ThreatModelRecord {
+  id: string;
+  title: string;
+  status: ThreatModelStatus;
+  configuration: ThreatModelConfiguration;
+  latestRun?: ThreatModelRun;
+  runs: ThreatModelRunSummary[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export async function loadAuthConfig(): Promise<AuthConfig> {
@@ -403,6 +536,56 @@ export async function deletePlatformScan(taskId: string): Promise<void> {
     method: 'DELETE', credentials: 'same-origin',
   });
   if (!response.ok) throw await apiError(response, '删除扫描任务失败');
+}
+
+export async function loadThreatModels(): Promise<ThreatModelRecord[]> {
+  const response = await fetch('/api/v1/threat-models', { credentials: 'same-origin' });
+  if (!response.ok) throw await apiError(response, '加载威胁模型失败');
+  return response.json() as Promise<ThreatModelRecord[]>;
+}
+
+export async function createThreatModel(input: { title: string; configuration: ThreatModelConfiguration }): Promise<ThreatModelRecord> {
+  const response = await fetch('/api/v1/threat-models', {
+    method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
+  });
+  if (!response.ok) throw await apiError(response, '创建威胁模型失败');
+  return response.json() as Promise<ThreatModelRecord>;
+}
+
+export async function startThreatModelRun(modelId: string): Promise<ThreatModelRecord> {
+  const response = await fetch(`/api/v1/threat-models/${encodeURIComponent(modelId)}/runs`, {
+    method: 'POST', credentials: 'same-origin',
+  });
+  if (!response.ok) throw await apiError(response, '运行威胁模型失败');
+  return response.json() as Promise<ThreatModelRecord>;
+}
+
+export async function updateThreatModelThreat(modelId: string, threatId: string, input: { status: ThreatStatus; owner?: string }): Promise<ThreatModelRecord> {
+  const response = await fetch(`/api/v1/threat-models/${encodeURIComponent(modelId)}/threats/${encodeURIComponent(threatId)}`, {
+    method: 'PATCH', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
+  });
+  if (!response.ok) throw await apiError(response, '更新威胁状态失败');
+  return response.json() as Promise<ThreatModelRecord>;
+}
+
+export async function createThreatModelThreat(modelId: string, input: {
+  title: string;
+  severity: ThreatSeverity;
+  stride: string[];
+  statement: string;
+  source: string;
+  action: string;
+  impact: string;
+  prerequisites: string[];
+  assets: string[];
+  goals: string[];
+  recommendation: string;
+}): Promise<ThreatModelRecord> {
+  const response = await fetch(`/api/v1/threat-models/${encodeURIComponent(modelId)}/threats`, {
+    method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
+  });
+  if (!response.ok) throw await apiError(response, '补录威胁失败');
+  return response.json() as Promise<ThreatModelRecord>;
 }
 
 export async function loadPlatformState(initialState: PlatformState): Promise<Snapshot> {

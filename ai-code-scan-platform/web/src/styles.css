@@ -169,6 +169,449 @@ code, pre { font-family: 'IBM Plex Mono', monospace; }
   .progress-live-stats { margin-left: 0; gap: 7px 12px; }
 }
 
+/* PROTOTYPE: security capability center. Local mock state only. */
+.capability-launch { width: min(1440px, 100%); margin: 0 auto -12px; padding: 24px 28px 0; }
+.capability-launch-heading h2 { margin: 0; font-size: 17px; }
+.capability-launch-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+.capability-launch-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.capability-launch-card { min-height: 92px; padding: 14px; display: grid; grid-template-columns: 38px minmax(0, 1fr) 18px; align-items: center; gap: 11px; text-align: left; color: #374151; background: #fff; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.capability-launch-card:hover { border-color: #9eb5aa; box-shadow: 0 3px 12px rgba(31, 41, 55, .06); }
+.capability-launch-card > span, .capability-icon { width: 38px; height: 38px; display: grid; place-items: center; color: #176b57; background: #eaf4ef; border-radius: 5px; }
+.capability-launch-card.indigo > span { color: #4d5f96; background: #eef0f8; }
+.capability-launch-card.red > span { color: #a23e43; background: #f9eeee; }
+.capability-launch-card div { min-width: 0; display: grid; gap: 5px; }
+.capability-launch-card strong { font-size: 13px; }
+.capability-launch-card small { color: var(--muted); font-size: 10px; line-height: 1.55; }
+.capability-launch-card > svg { color: #9ca3af; }
+
+.skill-installer-page { width: min(1180px, 100%); margin: auto; padding: 34px 28px 48px; }
+.skill-installer-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.skill-installer-header h1 { margin: 2px 0 0; font-size: 24px; }
+.skill-installer-header p { margin: 7px 0 0; color: var(--muted); font-size: 11px; }
+.skill-secret-note { max-width: 420px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; color: #315c50; background: #edf6f2; border: 1px solid #cfe2da; }
+.skill-secret-note span { display: grid; gap: 3px; }
+.skill-secret-note strong { font-size: 10px; }
+.skill-secret-note small { color: #60776f; font-size: 9px; line-height: 1.5; }
+.skill-environment { margin-top: 20px; padding: 16px 18px; background: #f4f7f5; border: 1px solid #d7e0dc; }
+.skill-environment-heading h2 { margin: 0; font-size: 14px; }
+.skill-environment-heading p { margin: 5px 0 0; color: var(--muted); font-size: 9px; line-height: 1.6; }
+.skill-environment-options { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.skill-environment-option > span { display: block; margin-bottom: 5px; color: #4e625a; font-size: 9px; font-weight: 700; }
+.skill-env-command { min-height: 68px; padding: 10px; display: grid; grid-template-columns: minmax(0, 1fr) 32px; align-items: start; gap: 9px; color: #dce8e2; background: #202a26; }
+.skill-env-command code { min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; font-size: 9px; line-height: 1.65; }
+.skill-env-command button { width: 32px; height: 32px; display: grid; place-items: center; color: #dce8e2; background: #34423c; border: 0; cursor: pointer; }
+.skill-environment-state { min-height: 72px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 10px; }
+.skill-environment-state.warning { margin-top: 12px; min-height: 48px; justify-content: flex-start; padding: 10px 12px; color: #7b5a28; background: #fff8e8; border: 1px solid #ead8ad; }
+.skill-copy-feedback { min-height: 18px; margin-top: 7px; color: #16705a; font-size: 9px; font-weight: 700; }
+.skill-install-grid { margin-top: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.skill-install-card { min-width: 0; padding: 18px; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); border-top: 3px solid #29745f; border-radius: 6px; }
+.skill-install-title { display: flex; align-items: center; gap: 11px; }
+.skill-install-title > span { width: 40px; height: 40px; display: grid; place-items: center; color: #176b57; background: #eaf4ef; border-radius: 5px; }
+.skill-install-title h2 { margin: 0 0 3px; font-size: 15px; }
+.skill-install-title code { color: #718079; font-size: 8px; }
+.skill-install-card > p { min-height: 50px; margin: 15px 0; color: #64716c; font-size: 10px; line-height: 1.7; }
+.skill-install-options { display: grid; gap: 12px; }
+.skill-install-option > span { display: block; margin-bottom: 5px; color: #64716c; font-size: 8px; font-weight: 700; }
+.skill-command { min-height: 92px; padding: 11px; display: grid; grid-template-columns: minmax(0, 1fr) 32px; align-items: start; gap: 9px; color: #dce8e2; background: #202a26; }
+.skill-command.secondary { min-height: 72px; color: #36564c; background: #edf3f0; border: 1px solid #d3dfda; }
+.skill-command code { min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; font-size: 9px; line-height: 1.65; }
+.skill-command button { width: 32px; height: 32px; display: grid; place-items: center; color: #dce8e2; background: #34423c; border: 0; cursor: pointer; }
+.skill-command.secondary button { color: #36564c; background: #d8e5df; }
+.skill-install-card footer { margin-top: 15px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.skill-install-card footer > span { color: var(--muted); font-size: 8px; }
+.skill-install-card footer code { display: block; margin-top: 3px; color: #4f625a; }
+.skill-install-card footer a { text-decoration: none; }
+.skill-installer-state { min-height: 240px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: 11px; }
+.skill-installer-state.error { color: #a23e43; }
+
+.capability-page { width: min(1320px, 100%); margin: auto; padding: 26px 28px 45px; }
+.capability-page-header, .capability-detail-header { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; align-items: start; gap: 20px; }
+.capability-page-header h1, .capability-detail-header h1 { margin: 0; font-size: 22px; }
+.capability-page-header p, .capability-detail-header p { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
+.capability-switcher { margin-top: 22px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 6px; background: #fff; overflow: hidden; }
+.capability-switcher button { min-height: 64px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border: 0; border-right: 1px solid var(--border); background: #fff; cursor: pointer; text-align: left; }
+.capability-switcher button:last-child { border-right: 0; }
+.capability-switcher button.active { color: #176b57; background: #eef7f3; box-shadow: inset 0 -3px #176b57; }
+.capability-switcher button.active.indigo { color: #4d5f96; background: #f1f2f8; box-shadow: inset 0 -3px #4d5f96; }
+.capability-switcher button.active.red { color: #a23e43; background: #fbf1f1; box-shadow: inset 0 -3px #a23e43; }
+.capability-switcher span { display: grid; gap: 3px; }
+.capability-switcher strong { color: #303a48; font-size: 12px; }
+.capability-switcher small { color: #8a93a0; font: 500 8px 'IBM Plex Mono', monospace; }
+.capability-overview { min-height: 118px; margin-top: 12px; padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid #cddfd7; background-color: #f3f8f6; background-image: linear-gradient(rgba(23,107,87,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,107,87,.045) 1px, transparent 1px); background-size: 24px 24px; }
+.capability-overview.indigo { border-color: #d5d9e8; background-color: #f5f6fa; }
+.capability-overview.red { border-color: #ead3d3; background-color: #fbf5f5; }
+.capability-overview > div { display: flex; align-items: center; gap: 14px; }
+.capability-overview h2 { margin: 0; font-size: 19px; }
+.capability-overview p { margin: 5px 0 0; color: #66716e; font-size: 11px; }
+.capability-tabs { margin-top: 18px; display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
+.capability-tabs button { height: 40px; padding: 0 15px; display: flex; align-items: center; gap: 7px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); cursor: pointer; font-size: 11px; }
+.capability-tabs button.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+.capability-task-panel, .capability-result-section { padding: 20px 0; }
+.capability-task-panel .section-title-row > span { color: var(--muted); font-size: 10px; }
+.capability-task-table { margin-top: 14px; overflow-x: auto; border: 1px solid var(--border); background: #fff; border-radius: 6px; }
+.capability-task-table td:first-child { min-width: 250px; }
+.capability-task-table td:first-child strong, .capability-task-table td:first-child small { display: block; }
+.capability-task-table td:first-child strong { color: var(--ink); font-size: 12px; }
+.capability-task-table td:first-child small { margin-top: 4px; color: #8a93a0; font: 500 9px 'IBM Plex Mono', monospace; }
+.prototype-status { padding: 3px 7px; color: #7a6540; background: #f7f1e5; border-radius: 3px; font-size: 9px; font-weight: 600; }
+.prototype-status.done { color: #176b57; background: #eaf4ef; }
+.capability-empty { min-height: 260px; display: grid; place-content: center; justify-items: center; gap: 12px; color: var(--muted); }
+.capability-create { width: min(660px, 94vw); }
+.capability-create-body { padding: 24px; }
+.capability-form-section { margin: 2px 0 14px; padding: 14px; background: #f7f9f8; border: 1px solid #dde5e1; }
+.capability-form-section > div:first-child { margin-bottom: 13px; display: grid; gap: 3px; }
+.capability-form-section strong { font-size: 11px; }
+.capability-form-section small { color: var(--muted); font-size: 9px; }
+.capability-form-section .form-field { margin-bottom: 0; }
+.prototype-checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.prototype-checklist span { padding: 9px 10px; display: flex; align-items: center; gap: 7px; color: #456257; background: #f2f7f5; border: 1px solid #dbe8e3; font-size: 10px; }
+.red-team-guard { padding: 12px; display: flex; gap: 10px; color: #815151; background: #fbf3f3; border: 1px solid #ead2d2; }
+.red-team-guard strong { font-size: 11px; }
+.red-team-guard p { margin: 4px 0 0; font-size: 10px; line-height: 1.6; }
+.capability-config-grid { padding-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.capability-config-card { min-height: 190px; padding: 18px; display: flex; flex-direction: column; align-items: flex-start; border: 1px solid var(--border); background: #fff; border-radius: 6px; }
+.capability-config-card > span { color: var(--muted); font-size: 10px; }
+.capability-config-card > strong { margin-top: 8px; font-size: 18px; }
+.capability-config-card p { margin: 12px 0 20px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.capability-config-card button { margin-top: auto; }
+.capability-detail-header { padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.stride-grid { margin-top: 18px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.stride-grid > div { min-height: 82px; padding: 12px; display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--border); }
+.stride-grid b { width: 27px; height: 27px; display: grid; place-items: center; color: #176b57; background: #eaf4ef; font: 600 12px 'IBM Plex Mono', monospace; }
+.stride-grid span { color: var(--muted); font-size: 9px; }
+.stride-grid strong { font-size: 18px; }
+.threat-flow { margin-top: 15px; padding: 22px; display: grid; grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr; align-items: center; gap: 9px; background: #f7f8f7; border: 1px solid var(--border); }
+.threat-flow > div { min-height: 105px; padding: 12px; display: grid; justify-items: start; align-content: center; gap: 6px; background: #fff; border: 1px solid #d9dfdc; }
+.threat-flow > div b { color: #176b57; font: 600 9px 'IBM Plex Mono', monospace; }
+.threat-flow > div strong { font-size: 11px; }
+.threat-flow > div small { color: var(--muted); font-size: 9px; }
+.threat-flow > svg { color: #9ca3af; }
+.prototype-finding { margin-top: 12px; padding: 14px; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 11px; color: #7e4145; background: #fbf3f3; border-left: 3px solid #b45151; }
+.prototype-finding strong { color: #58383b; font-size: 11px; }
+.prototype-finding p { margin: 5px 0 0; color: #805e61; font-size: 10px; line-height: 1.6; }
+.prototype-finding > span { font-size: 9px; font-weight: 600; }
+.agent-surface-grid { margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.agent-surface-grid > div { min-height: 76px; padding: 13px; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 9px; background: #fff; border: 1px solid var(--border); }
+.agent-surface-grid svg { color: #4d5f96; }
+.agent-surface-grid span { display: grid; gap: 4px; }
+.agent-surface-grid strong { font-size: 11px; }
+.agent-surface-grid small { color: var(--muted); font-size: 9px; }
+.agent-surface-grid b { color: #915057; font-size: 10px; }
+.result-view-tabs { margin-top: 18px; display: flex; overflow-x: auto; border: 1px solid var(--border); background: #fff; scrollbar-width: none; }
+.result-view-tabs::-webkit-scrollbar { display: none; }
+.result-view-tabs button { min-width: 132px; height: 43px; padding: 0 14px; flex: 1; color: #687386; background: transparent; border: 0; border-right: 1px solid var(--border); cursor: pointer; font-size: 10px; white-space: nowrap; }
+.result-view-tabs button:last-child { border-right: 0; }
+.result-view-tabs button:hover { color: #115846; background: #f7faf8; }
+.result-view-tabs button.active { color: #115846; background: #eaf4ef; box-shadow: inset 0 -3px #16705a; font-weight: 600; }
+.capability-metric-grid { margin-bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+.capability-metric { min-height: 93px; padding: 14px; display: grid; align-content: center; gap: 4px; background: #fff; border: 1px solid var(--border); border-top: 3px solid #70a994; }
+.capability-metric > span { color: var(--muted); font-size: 9px; }
+.capability-metric > strong { color: #26372f; font-size: 23px; }
+.capability-metric > small { color: #829088; font-size: 9px; }
+.capability-metric.danger { border-top-color: #b45151; }
+.capability-metric.warning { border-top-color: #a87524; }
+.result-split { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .55fr); gap: 14px; align-items: start; }
+.result-split .stride-grid { grid-template-columns: repeat(3, 1fr); }
+.evidence-panel { min-width: 0; background: #fff; border: 1px solid var(--border); }
+.evidence-panel > div { min-height: 55px; padding: 11px; display: flex; align-items: center; gap: 9px; color: #176b57; border-bottom: 1px solid var(--border); }
+.evidence-panel > div span { display: grid; gap: 2px; }
+.evidence-panel > div strong { color: #35423c; font-size: 10px; }
+.evidence-panel > div small { color: var(--muted); font-size: 8px; }
+.evidence-panel > button { width: 100%; min-height: 64px; padding: 9px 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; text-align: left; background: #fff; border: 0; border-bottom: 1px solid #edf0ee; cursor: pointer; }
+.evidence-panel > button:last-child { border-bottom: 0; }
+.evidence-panel > button:hover { background: #f8faf9; }
+.evidence-panel button > span { min-width: 0; display: flex; align-items: center; gap: 6px; color: #48564f; font-size: 9px; }
+.evidence-panel button b { color: #176b57; font: 600 8px 'IBM Plex Mono', monospace; }
+.evidence-panel button code { min-width: 0; overflow: hidden; color: #7c8782; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.evidence-panel button em { grid-column: 2; grid-row: 1 / span 2; align-self: center; padding: 3px 5px; color: #176b57; background: #eaf4ef; font-size: 8px; font-style: normal; }
+.evidence-panel button em.pending { color: #8a672c; background: #faf4e8; }
+.model-revision, .risk-label { display: inline-flex; align-items: center; gap: 5px; color: #65736c; font: 500 9px 'IBM Plex Mono', monospace; }
+.risk-label { padding: 5px 7px; color: #8c4348; background: #f9eeee; }
+.system-model, .attack-path { position: relative; margin-top: 15px; padding: 34px 20px 20px; display: grid; grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr; align-items: center; gap: 8px; background: #f7f9f8; border: 1px solid #dce4e0; }
+.system-model .boundary-label { position: absolute; top: 0; left: 0; right: 0; min-height: 26px; padding: 6px 10px; color: #65736c; background: #eef3f1; border-bottom: 1px dashed #b9c9c2; font: 500 8px 'IBM Plex Mono', monospace; }
+.system-model > div:not(.boundary-label), .attack-path > div { min-height: 108px; padding: 12px; display: grid; align-content: center; justify-items: start; gap: 6px; background: #fff; border: 1px solid #d7dfdb; }
+.system-model > div b, .attack-path > div b { color: #176b57; font: 600 9px 'IBM Plex Mono', monospace; }
+.system-model > div strong, .attack-path > div strong { font-size: 11px; }
+.system-model > div small, .attack-path > div small { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.system-model > svg, .attack-path > svg { color: #9ca3af; }
+.model-inventory { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.model-inventory > div { min-height: 74px; padding: 11px; display: flex; align-items: center; gap: 9px; background: #fff; border: 1px solid var(--border); }
+.model-inventory > div > span { width: 31px; height: 31px; flex: none; display: grid; place-items: center; color: #176b57; background: #eaf4ef; }
+.model-inventory svg { width: 16px; }
+.model-inventory > div > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; }
+.model-inventory small { color: var(--muted); font-size: 8px; }
+.model-inventory strong { font-size: 15px; }
+.model-inventory p { grid-column: 1 / -1; margin: 0; color: #7e8984; font-size: 8px; }
+.attack-path { padding-top: 20px; }
+.attack-path > div.danger { border-color: #ddb9bc; background: #fdf8f8; }
+.attack-path > div.danger b { color: #a84b51; }
+.path-control, .blast-radius { margin: 10px 0; padding: 12px; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; color: #176b57; background: #edf6f2; border-left: 3px solid #29906f; }
+.path-control strong, .blast-radius strong { color: #30423a; font-size: 10px; }
+.path-control p, .blast-radius p { margin: 4px 0 0; color: #64736c; font-size: 9px; line-height: 1.6; }
+.path-control > span, .blast-radius > span { align-self: center; color: #176b57; font-size: 8px; font-weight: 600; }
+.governance-table, .permission-table { margin-top: 14px; overflow-x: auto; border: 1px solid var(--border); }
+.governance-table table { min-width: 1050px; }
+.permission-table table { min-width: 820px; }
+.governance-table td { max-width: 220px; white-space: normal; font-size: 9px; line-height: 1.5; }
+.governance-table td strong, .governance-table td small { display: block; }
+.governance-table td strong { color: #37443e; font-size: 10px; }
+.governance-table td small { margin-top: 3px; color: var(--muted); font-size: 8px; }
+.decision-chip { padding: 3px 6px; color: #176b57; background: #eaf4ef; white-space: nowrap; }
+.change-list, .asset-source-list, .finding-catalog, .scenario-list { margin-top: 14px; background: #fff; border: 1px solid var(--border); }
+.change-list > div, .asset-source-list > div, .finding-catalog > button, .scenario-list > div { min-height: 62px; padding: 10px 13px; display: grid; align-items: center; gap: 10px; border: 0; border-bottom: 1px solid #edf0ee; background: transparent; text-align: left; }
+.change-list > div:last-child, .asset-source-list > div:last-child, .finding-catalog > button:last-child, .scenario-list > div:last-child { border-bottom: 0; }
+.change-list > div { grid-template-columns: 54px 70px minmax(0, 1fr) 16px; }
+.change-list > div > div, .asset-source-list > div > div, .finding-catalog button > div, .scenario-list > div > div { min-width: 0; display: grid; gap: 4px; }
+.change-list strong, .asset-source-list strong, .finding-catalog strong, .scenario-list strong { font-size: 10px; }
+.change-list small, .asset-source-list small, .finding-catalog small, .scenario-list small { color: var(--muted); font-size: 8px; }
+.change-list > div > b { color: #69756f; font-size: 9px; }
+.change-kind { padding: 3px 5px; color: #176b57; background: #eaf4ef; text-align: center; font-size: 8px; }
+.kind-变化 { color: #8a672c; background: #faf4e8; }
+.kind-已消失 { color: #697386; background: #edf1f5; }
+.agent-domain-grid { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.agent-domain-grid > div { min-height: 68px; padding: 11px; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 9px; background: #fff; border: 1px solid var(--border); }
+.agent-domain-grid > div > span { width: 24px; height: 24px; display: grid; place-items: center; color: #4d5f96; background: #eef0f8; font: 600 9px 'IBM Plex Mono', monospace; }
+.agent-domain-grid > div > div { display: grid; gap: 3px; }
+.agent-domain-grid strong { font-size: 10px; }
+.agent-domain-grid small { color: var(--muted); font-size: 8px; }
+.agent-domain-grid b { color: #8b4c52; font-size: 9px; }
+.asset-source-list > div { grid-template-columns: 32px minmax(0, 1fr) 100px 16px; }
+.asset-source-list > div > span { width: 30px; height: 30px; display: grid; place-items: center; color: #4d5f96; background: #eef0f8; }
+.asset-source-list svg { width: 16px; }
+.asset-source-list b { color: #58677a; font-size: 9px; }
+.permission-table td { font-size: 9px; }
+.blast-radius { color: #4d5f96; background: #f1f2f8; border-left-color: #6674a4; }
+.blast-radius > span { color: #4d5f96; }
+.finding-catalog > button { width: 100%; grid-template-columns: 54px minmax(0, 1fr) 100px 16px; cursor: pointer; }
+.finding-catalog > button:hover { background: #f8faf9; }
+.finding-catalog > button > b { color: #66736c; font-size: 9px; }
+.finding-severity { padding: 4px 6px; color: #9a4a50; background: #f9eeee; text-align: center; font-size: 8px; font-weight: 600; }
+.scenario-banner { padding: 14px; display: flex; gap: 11px; color: #4d5f96; background: #f1f2f8; border: 1px solid #d8dceb; }
+.scenario-banner strong { color: #39445e; font-size: 10px; }
+.scenario-banner p { margin: 4px 0 0; color: #68718a; font-size: 9px; line-height: 1.6; }
+.scenario-list > div { grid-template-columns: 24px minmax(0, 1fr) minmax(150px, .5fr) 90px; }
+.scenario-list > div > span { color: #a87524; }
+.scenario-list > div > b { color: #64716b; font-size: 8px; }
+.scenario-list em { padding: 4px 6px; color: #8a672c; background: #faf4e8; text-align: center; font-size: 8px; font-style: normal; }
+.scenario-list em.passed { color: #176b57; background: #eaf4ef; }
+.scenario-list em.blocked { color: #8b4248; background: #f9eeee; }
+.red-team-adapter { padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: #fff; border: 1px solid #e4d1d1; }
+.red-team-adapter > div { display: flex; align-items: center; gap: 12px; }
+.red-team-adapter h3 { margin: 0; font-size: 15px; }
+.red-team-adapter p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+.red-team-adapter > span { color: #976167; font: 600 9px 'IBM Plex Mono', monospace; }
+.red-team-gates { margin-top: 12px; border: 1px solid var(--border); background: #fff; }
+.red-team-gates h3 { margin: 0; padding: 14px; font-size: 12px; border-bottom: 1px solid var(--border); }
+.red-team-gates > div { min-height: 44px; padding: 0 14px; display: grid; grid-template-columns: 22px 1fr auto; align-items: center; border-bottom: 1px solid #edf0f3; font-size: 10px; }
+.red-team-gates > div:last-child { border-bottom: 0; }
+.red-team-gates svg { color: #a87524; }
+.red-team-gates b { color: #8b6d36; }
+
+/* Threat modeling workspace: AWS-inspired model/run workflow with local state. */
+.threat-workspace { min-width: 0; }
+.threat-explainer { margin-top: 18px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; color: #315046; background: #f2f8f5; border: 1px solid #cfe2da; }
+.threat-explainer > div:first-child { display: flex; align-items: flex-start; gap: 11px; }
+.threat-explainer > div:first-child > svg { flex: none; color: #176b57; }
+.threat-explainer > div:first-child span { display: grid; gap: 4px; }
+.threat-explainer strong { font-size: 12px; }
+.threat-explainer p { margin: 0; color: #64766e; font-size: 10px; line-height: 1.65; }
+.threat-input-modes { display: flex; gap: 8px; }
+.threat-input-modes > span { min-width: 118px; padding: 9px; display: grid; grid-template-columns: 20px 1fr; gap: 2px 6px; color: #176b57; background: #fff; border: 1px solid #dbe8e3; }
+.threat-input-modes svg { grid-row: 1 / span 2; align-self: center; }
+.threat-input-modes b { color: #3e5149; font-size: 9px; }
+.threat-input-modes small { color: #7a8982; font-size: 8px; }
+.threat-list-heading { margin-top: 18px; align-items: center; }
+.threat-model-table td:first-child { min-width: 260px; }
+.threat-model-table td:nth-child(2) { min-width: 260px; }
+.input-summary { display: inline-flex; align-items: center; gap: 5px; color: #52645c; font-size: 10px; }
+.severity-pair { color: #9c3f47; font: 600 10px 'IBM Plex Mono', monospace; }
+.prototype-status.model-status-已完成 { color: #176b57; background: #eaf4ef; }
+.prototype-status.model-status-分析中 { color: #1f5f9b; background: #eaf3fc; }
+.prototype-status.model-status-已停止, .prototype-status.model-status-失败 { color: #98464b; background: #f9eeee; }
+
+.threat-create-modal { width: min(960px, 96vw); }
+.threat-modal-icon { background: #176b57; }
+.threat-create-body { min-height: 0; padding: 20px 24px 28px; display: grid; grid-template-columns: .8fr 1.1fr 1.1fr; gap: 18px; overflow-y: auto; }
+.threat-create-body > section { min-width: 0; padding: 16px; background: #fafbfa; border: 1px solid var(--border); }
+.form-step { margin-bottom: 14px; display: block; color: #176b57; font: 600 9px 'IBM Plex Mono', monospace; }
+.form-help { min-height: 34px; margin: -5px 0 12px; color: var(--muted); font-size: 9px; line-height: 1.6; }
+.form-field textarea { width: 100%; min-height: 88px; padding: 9px 10px; resize: vertical; border: 1px solid var(--border-dark); border-radius: 5px; color: #2d3948; background: #fff; outline: 0; font: inherit; line-height: 1.55; }
+.form-field textarea:focus { border-color: #6da2e6; box-shadow: 0 0 0 3px #e8f1fd; }
+.threat-upload-zone { min-height: 112px; margin-bottom: 14px; padding: 14px; position: relative; display: grid; place-items: center; align-content: center; gap: 5px; text-align: center; color: #176b57; background: #f4f9f7; border: 1px dashed #8fb9a9; cursor: pointer; }
+.threat-upload-zone:hover { border-color: #176b57; }
+.threat-upload-zone strong { color: #3c5148; font-size: 10px; }
+.threat-upload-zone small { max-width: 260px; color: #75857e; font-size: 8px; line-height: 1.45; }
+.threat-upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.input-rule { padding: 10px; display: flex; gap: 8px; color: #176b57; background: #eef7f3; border-left: 3px solid #2e9071; }
+.input-rule span { display: grid; gap: 3px; }
+.input-rule strong { color: #385047; font-size: 9px; }
+.input-rule small { color: #687a72; font-size: 8px; line-height: 1.5; }
+.form-warning { color: #9a5f16 !important; }
+
+.threat-detail { padding-top: 20px; }
+.threat-detail-toolbar { padding: 0 0 20px; display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; align-items: start; gap: 20px; border-bottom: 1px solid var(--border); }
+.threat-detail-toolbar h2 { margin: 2px 0 0; font-size: 20px; }
+.threat-detail-toolbar p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+.threat-detail-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 7px; }
+.danger-button { color: #99444a !important; border-color: #ddb8bb !important; }
+.threat-result-tabs button { min-width: 112px; }
+.draft-state { min-height: 360px; display: grid; place-content: center; justify-items: center; gap: 11px; text-align: center; }
+.draft-state > span { width: 58px; height: 58px; display: grid; place-items: center; color: #176b57; background: #eaf4ef; }
+.draft-state h3 { margin: 0; font-size: 16px; }
+.draft-state p { max-width: 470px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.draft-state > div { display: flex; gap: 7px; }
+.draft-state b { padding: 6px 8px; color: #5a6a63; background: #f2f5f4; font-size: 8px; font-weight: 500; }
+.overview-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 18px; }
+.severity-distribution { margin-top: 14px; display: grid; gap: 8px; }
+.severity-distribution > div { min-height: 36px; position: relative; padding: 7px 10px; display: grid; grid-template-columns: 45px 26px 1fr; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border); overflow: hidden; }
+.severity-distribution b { z-index: 1; font-size: 12px; }
+.severity-distribution i { height: 4px; z-index: 1; display: block; background: #d9a2a6; }
+.threat-severity { min-width: 36px; padding: 3px 6px; display: inline-grid; place-items: center; font-size: 8px; font-weight: 600; font-style: normal; }
+.threat-severity.severity-严重 { color: #a72f39; background: #fbe5e7; }
+.threat-severity.severity-高 { color: #b25b1f; background: #faebdf; }
+.threat-severity.severity-中 { color: #96701f; background: #faf3df; }
+.threat-severity.severity-低 { color: #2f6993; background: #e7f0f7; }
+.compact-stride { grid-template-columns: repeat(3, 1fr); }
+.compact-stride > div { min-height: 64px; }
+.system-understanding { margin-top: 18px; padding: 17px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fff; border: 1px solid var(--border); border-left: 3px solid #176b57; }
+.system-understanding h3 { margin: 3px 0 8px; font-size: 14px; }
+.system-understanding p { margin: 0; color: #627069; font-size: 10px; line-height: 1.75; }
+.system-understanding dl { margin: 0; display: grid; gap: 9px; }
+.system-understanding dl > div { display: grid; gap: 3px; }
+.system-understanding dt { color: #176b57; font-size: 8px; font-weight: 600; }
+.system-understanding dd { margin: 0; color: #66736c; font-size: 9px; line-height: 1.55; }
+.system-overview-sections { margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.system-overview-sections article { min-height: 112px; padding: 13px; background: #fff; border: 1px solid var(--border); }
+.system-overview-sections h4 { margin: 0 0 7px; color: #176b57; font-size: 10px; }
+.system-overview-sections p { margin: 0; color: #6d7973; font-size: 9px; line-height: 1.7; }
+.component-table, .run-history-table { margin-top: 12px; overflow-x: auto; border: 1px solid var(--border); background: #fff; }
+.component-table td { font-size: 9px; }
+
+.threat-toolbar { margin-top: 14px; padding: 9px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #f5f7f6; border: 1px solid var(--border); }
+.threat-toolbar label { width: min(360px, 45%); height: 34px; padding: 0 9px; display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--border-dark); }
+.threat-toolbar label input { min-width: 0; flex: 1; border: 0; outline: 0; font-size: 10px; }
+.threat-toolbar > span { display: flex; align-items: center; gap: 6px; color: #7b8781; }
+.threat-toolbar select { height: 34px; padding: 0 25px 0 8px; color: #536159; background: #fff; border: 1px solid var(--border-dark); font-size: 9px; }
+.threat-catalog { min-height: 570px; display: grid; grid-template-columns: minmax(340px, .78fr) minmax(440px, 1.22fr); border: 1px solid var(--border); border-top: 0; background: #fff; }
+.threat-list { min-width: 0; border-right: 1px solid var(--border); }
+.threat-list > button { width: 100%; min-height: 76px; padding: 10px; display: grid; grid-template-columns: 42px minmax(0, 1fr) 55px 16px; align-items: center; gap: 8px; text-align: left; color: inherit; background: #fff; border: 0; border-bottom: 1px solid #edf0ee; cursor: pointer; }
+.threat-list > button:hover, .threat-list > button.active { background: #f4f8f6; }
+.threat-list > button.active { box-shadow: inset 3px 0 #176b57; }
+.threat-list > button > div { min-width: 0; display: grid; gap: 4px; }
+.threat-list strong { color: #35423c; font-size: 10px; line-height: 1.4; }
+.threat-list small { overflow: hidden; color: #7d8883; font: 500 8px 'IBM Plex Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
+.threat-status { padding: 3px 5px; text-align: center; font-size: 8px; font-style: normal; white-space: nowrap; }
+.threat-status.status-开放 { color: #9a4b50; background: #f9eeee; }
+.threat-status.status-已解决 { color: #176b57; background: #eaf4ef; }
+.threat-status.status-已驳回 { color: #657181; background: #edf1f5; }
+.empty-filter { min-height: 180px; display: grid; place-items: center; color: var(--muted); font-size: 10px; }
+.threat-detail-panel { min-width: 0; padding: 17px; background: #fcfdfc; }
+.threat-detail-panel > header { display: flex; justify-content: space-between; gap: 10px; }
+.threat-detail-panel > header > div { display: flex; gap: 6px; }
+.threat-detail-panel > header > strong { color: #78857e; font: 600 9px 'IBM Plex Mono', monospace; }
+.threat-detail-panel > h4 { margin: 13px 0 15px; font-size: 15px; line-height: 1.4; }
+.threat-detail-panel section, .threat-facts { margin-top: 10px; padding: 11px; background: #fff; border: 1px solid #e1e6e3; }
+.threat-detail-panel section > span, .threat-facts span { display: block; margin-bottom: 5px; color: #176b57; font-size: 8px; font-weight: 600; }
+.threat-detail-panel p { margin: 0; color: #5f6e67; font-size: 9px; line-height: 1.7; }
+.threat-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.threat-detail-panel ul { margin: 0; padding-left: 16px; color: #5f6e67; font-size: 9px; line-height: 1.7; }
+.detail-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.detail-tags b { padding: 4px 6px; color: #4f6259; background: #eef4f1; font-size: 8px; font-weight: 500; }
+.threat-detail-panel section > code { margin-top: 5px; display: block; color: #52665c; font-size: 8px; }
+.threat-detail-panel .recommendation { color: #176b57; background: #f0f7f4; border-color: #cfe2da; }
+.threat-detail-panel footer { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.threat-detail-panel footer > span { color: var(--muted); font-size: 8px; }
+.threat-detail-panel footer > div { display: flex; gap: 6px; }
+.manual-threat-modal { width: min(690px, 94vw); }
+.evidence-strip { padding: 11px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; color: #176b57; background: #fff; border: 1px solid var(--border); }
+.evidence-strip span { color: #64736c; font-size: 8px; }
+.evidence-strip b { color: #176b57; font: 600 8px 'IBM Plex Mono', monospace; }
+
+.run-summary { min-height: 62px; padding: 12px 14px; display: flex; align-items: center; gap: 13px; background: #fff; border: 1px solid var(--border); }
+.run-summary > div { min-width: 0; margin-right: auto; display: flex; align-items: center; gap: 9px; color: #176b57; }
+.run-summary > div span { display: grid; gap: 3px; }
+.run-summary strong { color: #35423c; font-size: 10px; }
+.run-summary small { color: var(--muted); font-size: 8px; }
+.run-subtabs { margin-top: 10px; display: flex; gap: 5px; border-bottom: 1px solid var(--border); }
+.run-subtabs button { height: 38px; padding: 0 13px; display: inline-flex; align-items: center; gap: 6px; color: #6e7a74; background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-size: 9px; }
+.run-subtabs button.active { color: #176b57; border-bottom-color: #176b57; font-weight: 600; }
+.run-configuration, .preflight-list, .run-logs { margin-top: 12px; background: #fff; border: 1px solid var(--border); }
+.run-configuration > div { min-height: 54px; padding: 10px 13px; display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 12px; border-bottom: 1px solid #edf0ee; }
+.run-configuration > div:last-child { border-bottom: 0; }
+.run-configuration span { color: var(--muted); font-size: 9px; }
+.run-configuration strong { color: #45544d; font-size: 9px; font-weight: 500; }
+.preflight-list > div { min-height: 58px; padding: 10px 13px; display: grid; grid-template-columns: 28px minmax(0, 1fr) 75px; align-items: center; gap: 9px; border-bottom: 1px solid #edf0ee; }
+.preflight-list > div:last-child { border-bottom: 0; }
+.preflight-list > div > span { width: 24px; height: 24px; display: grid; place-items: center; color: #176b57; background: #eaf4ef; }
+.preflight-list > div > span.running { color: #1f659a; background: #eaf3fc; }
+.preflight-list > div > span.skipped { color: #7a8490; background: #edf1f5; }
+.preflight-list > div > div { display: grid; gap: 4px; }
+.preflight-list strong { font-size: 10px; }
+.preflight-list small { color: var(--muted); font-size: 8px; }
+.preflight-list b { color: #65736c; font-size: 8px; }
+.run-logs { padding: 10px 0; color: #d9e2dc; background: #1f2925; border: 0; }
+.run-logs > div { min-height: 36px; padding: 7px 13px; display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.run-logs code { color: #7fb49e; font-size: 8px; }
+.run-logs span { font-size: 9px; }
+.run-logs span.running::after { content: ' '; width: 5px; height: 5px; margin-left: 7px; display: inline-block; background: #7fb49e; animation: threatPulse 1s infinite; }
+@keyframes threatPulse { 50% { opacity: .25; } }
+.history-change-heading { margin-top: 22px; }
+.run-history-table td { font-size: 9px; }
+
+@media (max-width: 900px) {
+  .skill-install-grid { grid-template-columns: 1fr; }
+  .skill-installer-header { align-items: stretch; flex-direction: column; }
+  .skill-environment-options { grid-template-columns: 1fr; }
+  .capability-launch-grid, .capability-config-grid { grid-template-columns: 1fr; }
+  .capability-switcher { grid-template-columns: 1fr; }
+  .capability-switcher button { border-right: 0; border-bottom: 1px solid var(--border); }
+  .capability-page-header, .capability-detail-header { grid-template-columns: 1fr; }
+  .stride-grid { grid-template-columns: repeat(3, 1fr); }
+  .threat-flow { grid-template-columns: 1fr; }
+  .threat-flow > svg { margin: auto; transform: rotate(90deg); }
+  .capability-metric-grid, .model-inventory { grid-template-columns: 1fr 1fr; }
+  .result-split { grid-template-columns: 1fr; }
+  .system-model, .attack-path { grid-template-columns: 1fr; }
+  .system-model > svg, .attack-path > svg { margin: auto; transform: rotate(90deg); }
+  .threat-explainer, .system-understanding { grid-template-columns: 1fr; }
+  .threat-input-modes { flex-wrap: wrap; }
+  .threat-create-body { grid-template-columns: 1fr; }
+  .threat-detail-toolbar { grid-template-columns: 1fr; }
+  .threat-detail-actions { justify-content: flex-start; }
+  .overview-grid { grid-template-columns: 1fr; }
+  .system-overview-sections { grid-template-columns: 1fr 1fr; }
+  .threat-catalog { grid-template-columns: 1fr; }
+  .threat-list { border-right: 0; border-bottom: 1px solid var(--border); }
+}
+
+@media (max-width: 600px) {
+  .skill-installer-page { padding: 24px 14px 40px; }
+  .capability-launch, .capability-page { padding-left: 14px; padding-right: 14px; }
+  .capability-overview { align-items: flex-start; flex-direction: column; }
+  .prototype-checklist, .agent-surface-grid, .stride-grid { grid-template-columns: 1fr; }
+  .capability-detail-header { gap: 10px; }
+  .capability-create-body .form-grid, .capability-metric-grid, .model-inventory, .agent-domain-grid { grid-template-columns: 1fr; }
+  .result-view-tabs button { min-width: 116px; }
+  .path-control, .blast-radius { grid-template-columns: 22px 1fr; }
+  .path-control > span, .blast-radius > span { grid-column: 2; }
+  .change-list > div { grid-template-columns: 52px minmax(0, 1fr) 16px; }
+  .change-list > div > b { display: none; }
+  .asset-source-list > div { grid-template-columns: 30px minmax(0, 1fr) 16px; }
+  .asset-source-list > div > b { display: none; }
+  .finding-catalog > button { grid-template-columns: 50px minmax(0, 1fr) 16px; }
+  .finding-catalog > button > b { display: none; }
+  .scenario-list > div { grid-template-columns: 22px minmax(0, 1fr) 82px; }
+  .scenario-list > div > b { display: none; }
+  .threat-input-modes { display: grid; }
+  .threat-toolbar { align-items: stretch; flex-direction: column; }
+  .threat-toolbar label { width: 100%; }
+  .threat-toolbar > span { flex-wrap: wrap; }
+  .threat-facts, .system-overview-sections { grid-template-columns: 1fr; }
+  .threat-detail-panel footer { align-items: flex-start; flex-direction: column; }
+  .threat-detail-panel footer > div { flex-wrap: wrap; }
+  .run-configuration > div { grid-template-columns: 1fr; }
+}
+
 .finding-section { padding: 20px 24px 28px; }
 .section-title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; }
 .section-title-row h3 { margin: 0; font-size: 16px; }
@@ -946,6 +1389,15 @@ tbody tr:hover { background: #f7f9fa; }
 .auth-proof { color: #4b5563; }
 .auth-proof svg { color: #16705a; }
 .auth-panel { background: #fff; border-left: 1px solid var(--border); }
+
+/* Threat-modeling API states */
+.threat-loading { min-height: 360px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #637083; }
+.threat-api-error { margin: 14px 22px 0; padding: 10px 12px; display: flex; align-items: center; gap: 8px; color: #9f2d2d; border: 1px solid #efcaca; border-radius: 5px; background: #fff6f6; font-size: 12px; }
+.threat-api-error button { margin-left: auto; color: inherit; border: 0; background: transparent; cursor: pointer; }
+.attack-path-group + .attack-path-group { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+.coverage-limitations { margin-top: 16px; padding: 13px 15px; display: flex; align-items: flex-start; gap: 10px; color: #7c5a15; border: 1px solid #ead9a8; border-radius: 5px; background: #fffbeb; }
+.coverage-limitations strong { display: block; margin-bottom: 4px; color: #60430d; font-size: 12px; }
+.coverage-limitations p { margin: 2px 0; font-size: 11px; line-height: 1.5; }
 
 @media (max-width: 1100px) {
   .app-shell { padding-left: 208px; }

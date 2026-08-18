@@ -23,6 +23,7 @@ import (
 	"ai-code-scan-platform/internal/scanqueue"
 	"ai-code-scan-platform/internal/secretstore"
 	"ai-code-scan-platform/internal/skill"
+	"ai-code-scan-platform/internal/threatmodel"
 )
 
 func main() {
@@ -81,6 +82,7 @@ func main() {
 	}, skillService, review.NewOpenAIClient(&http.Client{Timeout: configuration.ReviewTimeout}), modelKeyCipher, configuration.ReviewConcurrency)
 	scanService.WithModelResolver(reviewService)
 	modelProxyService := modelproxy.NewService(scanService, reviewService, modelKeyCipher, 10*time.Minute)
+	threatModelService := threatmodel.NewService(threatmodel.NewMySQLRepository(databaseConnection), scanRepository, threatmodel.NewAnalyzer())
 	dispatchContext, stopDispatcher := context.WithCancel(context.Background())
 	defer stopDispatcher()
 	fallbackQueueConfiguration := environmentScanQueueConfiguration(configuration)
@@ -120,7 +122,10 @@ func main() {
 		}
 		w.WriteHeader(http.StatusNoContent)
 	})
-	skill.NewHandler(skillService, configuration.AdminToken).WithBuiltInRoot(configuration.BuiltInSkillRoot).RegisterRoutes(mux)
+	skill.NewHandler(skillService, configuration.AdminToken).
+		WithBuiltInRoot(configuration.BuiltInSkillRoot).
+		WithDistributionRoot(configuration.DistributionSkillsRoot).
+		RegisterRoutes(mux)
 	authHandler.RegisterRoutes(mux)
 	notification.NewHandler(notificationService, authHandler.RequireUser).RegisterRoutes(mux)
 	productcatalog.NewHandler(productcatalog.NewClient(configuration.SSOUACGateway, &http.Client{Timeout: configuration.ProductCatalogTimeout}), authHandler.RequireUser, func(ctx context.Context) (productcatalog.Tokens, bool) {
@@ -136,6 +141,7 @@ func main() {
 	platformstate.NewHandler(platformStateService, configuration.AdminToken, authHandler.RequireUser).RegisterRoutes(mux)
 	review.NewHandler(reviewService, configuration.ReviewMaxBytes).RegisterRoutes(mux)
 	modelproxy.NewHandler(modelProxyService, configuration.AdminToken, configuration.ReviewMaxBytes).RegisterRoutes(mux)
+	threatmodel.NewHandler(threatModelService, authHandler.RequireUser).RegisterRoutes(mux)
 
 	server := &http.Server{
 		Addr:              configuration.HTTPAddress,
